@@ -199,7 +199,7 @@ DEFAULT = E("இந்த மதிப்பு இயல்பு வரம்�
 STATUS_TA = {"LOW": "குறைவு", "HIGH": "அதிகம்", "NORMAL": "இயல்பு"}
 
 ALIASES = [
-    ("Hemoglobin", r"h(?:a)?emoglobin|\bhb\b"),
+    ("Hemoglobin", r"moglobin|\bhb\b"),
     ("RBC Count", r"\brbc\b|red blood cell|red cell count|erythrocyte"),
     ("Hematocrit (PCV)", r"h(?:a)?ematocrit|\bpcv\b|packed cell"),
     ("MCV", r"\bmcv\b|mean corpuscular volume"),
@@ -270,15 +270,27 @@ LIMITS = {
 }
 
 
-def plausible(key, value, lo, hi):
+SCALE_BOUNDS = {"WBC Count": (1000, 40000), "Platelet Count": (10000, 1000000)}
+
+
+def fit(key, value, lo, hi):
+    """Return the value expressed in the range's own units, or None if anything looks implausible."""
     if lo >= hi or key not in TYPICAL:
-        return False
+        return None
     (l1, l2), (h1, h2) = TYPICAL[key]
     v1, v2 = LIMITS[key]
-    for f in (1, 1000, 100000):
-        if l1 <= lo * f <= l2 and h1 <= hi * f <= h2 and v1 <= value * f <= v2:
-            return True
-    return False
+    for fr in (1, 1000, 100000):
+        if not (l1 <= lo * fr <= l2 and h1 <= hi * fr <= h2):
+            continue
+        for fv in (1, 1000, 100000):
+            if fv == 1:
+                ok = v1 <= value <= v2
+            else:
+                b1, b2 = SCALE_BOUNDS.get(key, (None, None))
+                ok = b1 is not None and b1 <= value * fv <= b2
+            if ok:
+                return round(value * fv / fr, 4)
+    return None
 
 
 def clean_line(line):
@@ -300,6 +312,17 @@ def find_range(after):
     return min(found)[1:] if found else None
 
 
+AGE = re.compile(r"\d+\s*-\s*\d+\s*(?:yrs?|years?)\b\s*:?|(?:>|above|over)\s*\d+\s*(?:yrs?|years?)\b\s*:?", re.I)
+ADULT = re.compile(r"(?:>|above|over)\s*18\s*(?:yrs?|years?)|adults?\b", re.I)
+AGE_WORD = re.compile(r"yrs?|vrs|years?", re.I)
+
+
+def adult_range(line):
+    line = clean_line(line)
+    m = ADULT.search(line)
+    return find_range(line[m.end():]) if m else None
+
+
 def parse_line(line):
     line = clean_line(line)
     low = line.lower()
@@ -313,7 +336,7 @@ def parse_line(line):
             continue
         if key in DIFF and "absolute" in low:
             continue
-        if key == "Hemoglobin" and re.search(r"a1c|glyc|mean cell|corpuscular|\bmch", low):
+        if key == "Hemoglobin" and re.search(r"a1c|glyc|mean cell|corpuscular|\bmch|methem|carboxy", low):
             continue
         if key == "Creatinine" and re.search(r"clearance|ratio|urine", low):
             continue
@@ -323,7 +346,7 @@ def parse_line(line):
             return None
         value = float(vm.group())
         after = rest[vm.end():]
-        rng = find_range(after)
+        rng = find_range(AGE.sub(" ", after))
         if not rng:
             return None
         lo, hi = rng
@@ -340,7 +363,7 @@ def parse_line(line):
 def unknown_test_name(line):
     line = clean_line(line)
     m = re.search(r"\d", line)
-    if not m or re.search(r"\d{1,2}[-/]\d{1,2}[-/]\d{2,4}", line):
+    if not m or re.search(r"\d{1,2}[-/]\d{1,2}[-/]\d{2,4}", line) or AGE_WORD.search(line):
         return None
     if any(re.search(pat, line, re.I) for _, pat in ALIASES):
         return None
@@ -377,37 +400,51 @@ def read_text(uploaded):
 
 
 def repair(key, value, lo, hi):
-    if plausible(key, value, lo, hi):
-        return value, lo, hi
+    v = fit(key, value, lo, hi)
+    if v is not None:
+        return v, lo, hi
     for fl, fh in ((0.1, 0.1), (1, 0.1), (0.1, 1)):
         if (fl != 1 and not (lo.is_integer() and lo >= 10)) or (fh != 1 and not (hi.is_integer() and hi >= 10)):
             continue
         for fv in (1, 0.1):
             if fv != 1 and not (value.is_integer() and value >= 10):
                 continue
-            if plausible(key, value * fv, lo * fl, hi * fh):
-                return round(value * fv, 2), round(lo * fl, 2), round(hi * fh, 2)
+            v = fit(key, value * fv, lo * fl, hi * fh)
+            if v is not None:
+                return v, round(lo * fl, 2), round(hi * fh, 2)
     return None
 
 
 def analyze_text(text):
-    rows, seen, doubtful, unknown = [], set(), [], []
-    for line in text.split("\n"):
+    lines = text.split("\n")
+    best, doubtful, unknown = {}, [], []
+    for i, line in enumerate(lines):
         res = parse_line(line)
         if not res:
             name = unknown_test_name(line)
             if name and name.lower() not in [u.lower() for u in unknown]:
                 unknown.append(name)
             continue
-        if res[0] in seen:
+        key, value, unit, lo, hi = res
+        adult = False
+        if AGE_WORD.search(line):
+            for nxt in lines[i + 1:i + 4]:
+                if parse_line(nxt):
+                    break
+                ar = adult_range(nxt)
+                if ar:
+                    lo, hi = ar
+                    adult = True
+                    break
+        if key in best and (best[key][1] or not adult):
             continue
-        fixed = repair(res[0], res[1], res[3], res[4])
+        fixed = repair(key, value, lo, hi)
         if not fixed:
-            doubtful.append(res[0])
+            doubtful.append(key)
             continue
-        seen.add(res[0])
-        rows.append((res[0], fixed[0], res[2], fixed[1], fixed[2]))
-    doubtful = sorted(set(doubtful) - seen)
+        best[key] = ((key, fixed[0], unit, fixed[1], fixed[2]), adult)
+    doubtful = sorted(set(doubtful) - set(best))
+    rows = [v[0] for v in best.values()]
     df = pd.DataFrame(rows, columns=["Test", "Value", "Unit", "Low", "High"])
     if not df.empty:
         df["Status"] = df.apply(
@@ -466,6 +503,7 @@ if uploaded:
         if doubtful:
             st.warning("இந்த மதிப்புகளைச் சரியாகப் படிக்க முடியவில்லை, அதனால் அவற்றை விட்டுவிட்டோம்: " + ", ".join(doubtful) + ". அசல் அறிக்கையைப் பார்க்கவும்.")
         st.subheader(f"சுருக்கம்: {len(df)} மதிப்புகளில் {n} இயல்பாக இல்லை")
+        st.caption("அறிக்கையில் வயது வாரியான வரம்புகள் இருந்தால் 18 வயதுக்கு மேற்பட்டவர்களுக்கான வரம்பு எடுக்கப்படும். மதிப்பும் வரம்பும் வெவ்வேறு அலகுகளில் (ஆயிரம் / லட்சம்) இருந்தால் ஒரே அலகாக மாற்றிக் காட்டப்படும்.")
         for _, r in df.iterrows():
             show(r)
         if n:
