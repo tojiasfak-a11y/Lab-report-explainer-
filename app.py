@@ -104,6 +104,97 @@ INFO = {
                   "எடை கூடுதல், சோர்வு, குளிர் தாங்க முடியாமை இருந்தால் மருத்துவரை அணுகவும்."),
     },
 }
+CHOL_DIET = "வறுத்த உணவு, நெய், வனஸ்பதி, இறைச்சிக் கொழுப்பைக் குறைக்கவும். ஓட்ஸ், பழங்கள், காய்கறிகள், கொட்டைகள் சேர்க்கவும். தினமும் நடைப்பயிற்சி செய்யவும்."
+LIPID_RISK = "குடும்பத்தில் இதய நோய், உடல் பருமன், புகைப்பழக்கம், நீரிழிவு, உயர் இரத்த அழுத்தம்."
+SUGAR_RISK = "குடும்பத்தில் நீரிழிவு, உடல் பருமன், உடற்பயிற்சி இல்லாமை, அதிக இனிப்பு உணவுகள்."
+LIVER_DIET = "மது முழுமையாகத் தவிர்க்கவும். வறுத்த, எண்ணெய் அதிகமான உணவுகளைக் குறைக்கவும். காய்கறி, பழங்கள் சேர்த்து, தினமும் நடைப்பயிற்சி செய்யவும். மருத்துவர் சொல்லாமல் மூலிகை, மாத்திரைகளை எடுக்க வேண்டாம்."
+LIVER_DOC = "கண், தோல் மஞ்சளாதல், வயிற்று வலி, தொடர் வாந்தி இருந்தால் உடனே மருத்துவரை அணுகவும். மற்றபடி மருத்துவரிடம் காட்டி மேலும் பரிசோதனைகள் செய்யவும்."
+OTHER_BLOOD = "மற்ற இரத்த மதிப்புகளுடன் சேர்த்து மருத்துவர் மதிப்பிடுவார். மருத்துவரிடம் கேளுங்கள்."
+
+INFO.update({
+    "MCH": {
+        "LOW": E("சிவப்பணு ஒன்றில் உள்ள ஹீமோகுளோபின் அளவு குறைவாக உள்ளது.", "இரும்புச்சத்து குறைபாடு.", "", IRON_DIET,
+                 "ஹீமோகுளோபின், MCV மதிப்புகளுடன் சேர்த்து மருத்துவரிடம் கேளுங்கள்."),
+        "HIGH": E("சிவப்பணு ஒன்றில் உள்ள ஹீமோகுளோபின் அளவு அதிகமாக உள்ளது.", "வைட்டமின் B12 அல்லது ஃபோலேட் குறைபாடு.", "",
+                  "முட்டை, பால், தயிர், பருப்பு, கீரை வகைகளைச் சேர்த்துக் கொள்ளலாம்.", "B12 பரிசோதனை தேவையா என்று மருத்துவரிடம் கேளுங்கள்."),
+    },
+    "MCHC": {
+        "LOW": E("சிவப்பணுக்களில் ஹீமோகுளோபின் செறிவு குறைவாக உள்ளது (நிறம் குறைந்த சிவப்பணுக்கள்).", "இரும்புச்சத்து குறைபாடு.", "", IRON_DIET,
+                 "ஹீமோகுளோபின், MCV மதிப்புகளுடன் சேர்த்து மருத்துவரிடம் கேளுங்கள்."),
+        "HIGH": E("சிவப்பணுக்களில் ஹீமோகுளோபின் செறிவு சற்று அதிகமாக உள்ளது.",
+                  "இரத்த மாதிரியை எடுக்கும் அல்லது பரிசோதிக்கும் முறையில் ஏற்படும் மாறுபாடு, அல்லது அரிதாகச் சில சிவப்பணு நிலைகள்.", "", "",
+                  "மற்ற இரத்த மதிப்புகள் இயல்பாக இருந்தால் இது பெரும்பாலும் முக்கியமில்லாத மாறுபாடாக இருக்கலாம். உறுதிசெய்ய மருத்துவரிடம் கேளுங்கள்."),
+    },
+    "Monocytes": {
+        "LOW": E("மோனோசைட் வெள்ளையணுக்கள் குறைவாக உள்ளன.", "சில மருந்துகள், ஸ்டீராய்டு பயன்பாடு, சில சமயம் சாதாரண மாறுபாடு.", "", "", OTHER_BLOOD),
+        "HIGH": E("மோனோசைட் வெள்ளையணுக்கள் அதிகமாக உள்ளன.", "நீண்டகாலத் தொற்று, வீக்கம், தொற்றிலிருந்து குணமடையும் காலம்.", "", "",
+                  "காய்ச்சல், எடை குறைதல் போன்ற அறிகுறிகள் இருந்தால் மருத்துவரை அணுகவும்."),
+    },
+    "Eosinophils": {
+        "LOW": E("ஈசினோஃபில் வெள்ளையணுக்கள் குறைவாக உள்ளன.", "ஸ்டீராய்டு மருந்துகள், மன அழுத்தம். பெரும்பாலும் முக்கியமில்லாத மாறுபாடு.", "", "", OTHER_BLOOD),
+        "HIGH": E("ஈசினோஃபில் வெள்ளையணுக்கள் அதிகமாக உள்ளன.", "ஒவ்வாமை, ஆஸ்துமா, தோல் ஒவ்வாமை, குடல் புழுக்கள்.",
+                  "ஒவ்வாமை வரலாறு, தூசி, சில உணவுகள் அல்லது மருந்துகளால் ஒவ்வாமை.", "உங்களுக்கு ஒவ்வாத பொருட்களைத் தவிர்க்கவும்.",
+                  "இருமல், மூச்சிரைப்பு, தோல் அரிப்பு இருந்தால் மருத்துவரை அணுகவும்."),
+    },
+    "Basophils": {
+        "LOW": E("பேசோஃபில் வெள்ளையணுக்கள் குறைவாக உள்ளன. இது பொதுவாக முக்கியமில்லாத மாறுபாடு.", "", "", "", OTHER_BLOOD),
+        "HIGH": E("பேசோஃபில் வெள்ளையணுக்கள் அதிகமாக உள்ளன.", "ஒவ்வாமை, வீக்கம், அரிதாக இரத்த தொடர்பான நோய்கள்.", "", "",
+                  "மருத்துவரிடம் காட்டி காரணத்தை அறியவும்."),
+    },
+    "HbA1c": {
+        "LOW": E("கடந்த 2-3 மாத சராசரி சர்க்கரை அளவு குறைவாகக் காணப்படுகிறது.", "இரத்தசோகை, சமீபத்திய இரத்த இழப்பு இருந்தால் இப்படிக் காட்டலாம்.", "", "",
+                 "மருத்துவரிடம் கேளுங்கள்."),
+        "HIGH": E("கடந்த 2-3 மாதங்களின் சராசரி இரத்தச் சர்க்கரை அளவு அதிகமாக உள்ளது. இது நீரிழிவுக்கு முந்தைய நிலை அல்லது நீரிழிவாக இருக்கலாம்.",
+                  "சர்க்கரை கட்டுப்பாடு சரியில்லாமை, இனிப்பு, மாவுச்சத்து அதிகம்.", SUGAR_RISK,
+                  "இனிப்பு, குளிர்பானங்கள், வெள்ளை அரிசி அளவைக் குறைத்து, காய்கறி, கீரை, கேழ்வரகு, கம்பு போன்ற சிறுதானியங்களைச் சேர்க்கவும். தினமும் 30 நிமிடம் நடைப்பயிற்சி செய்யவும்.",
+                  "மருத்துவரை அணுகி நீரிழிவு உறுதியா என்றும் சிகிச்சை தேவையா என்றும் கேளுங்கள்."),
+    },
+    "Triglycerides": {
+        "HIGH": E("டிரைகிளிசரைடு (இரத்தக் கொழுப்பு) அதிகமாக உள்ளது. இது இதய நோய் அபாயத்தை அதிகரிக்கலாம்.",
+                  "இனிப்பு, மாவுச்சத்து, வறுத்த உணவு அதிகம், மது, உடற்பயிற்சி இல்லாமை, நீரிழிவு.", LIPID_RISK,
+                  "இனிப்பு, குளிர்பானங்கள், பேக்கரி உணவுகள், வெள்ளை அரிசி, மது குறைக்கவும். மீன், கொட்டைகள், காய்கறிகள் சேர்த்து தினமும் நடைப்பயிற்சி செய்யவும்.",
+                  "மதிப்பு மிக அதிகமாக இருந்தாலோ வயிற்று வலி இருந்தாலோ விரைவில் மருத்துவரை அணுகவும்."),
+    },
+    "HDL Cholesterol": {
+        "LOW": E("HDL ('நல்ல' கொலஸ்ட்ரால்) குறைவாக உள்ளது. இது இதய நோய் அபாயத்தை அதிகரிக்கலாம்.",
+                 "உடற்பயிற்சி இல்லாமை, புகைப்பழக்கம், உடல் பருமன், நீரிழிவு.", LIPID_RISK,
+                 "தினமும் நடைப்பயிற்சி அல்லது உடற்பயிற்சி செய்யவும், புகைப்பழக்கத்தை நிறுத்தவும். கொட்டைகள், மீன், பழங்கள், காய்கறிகள் சேர்க்கவும்.",
+                 "மற்ற கொலஸ்ட்ரால் மதிப்புகளுடன் சேர்த்து மருத்துவரிடம் கேளுங்கள்."),
+    },
+    "LDL Cholesterol": {
+        "HIGH": E("LDL ('கெட்ட' கொலஸ்ட்ரால்) அதிகமாக உள்ளது. இது நீண்ட காலத்தில் இதய நோய் அபாயத்தை அதிகரிக்கலாம்.",
+                  "கொழுப்பு அதிகமான உணவு, உடற்பயிற்சி இல்லாமை, மரபு.", LIPID_RISK, CHOL_DIET,
+                  "உங்கள் இதய அபாயத்தைப் பொறுத்து சிகிச்சை தேவையா என்று மருத்துவரிடம் கேளுங்கள்."),
+    },
+    "Creatinine": {
+        "LOW": E("கிரியாட்டினின் குறைவாக உள்ளது. இது பெரும்பாலும் தசை குறைவு அல்லது அதிக நீர் குடிப்பதால் இருக்கலாம்.", "குறைந்த தசை, கர்ப்பம்.", "", "",
+                 "மருத்துவரிடம் கேளுங்கள்."),
+        "HIGH": E("கிரியாட்டினின் அதிகமாக உள்ளது. சிறுநீரகம் இரத்தத்தை முழுமையாக வடிகட்டவில்லை என்பதற்கான அறிகுறியாக இருக்கலாம்.",
+                  "நீர்ச்சத்து குறைவு, சிறுநீரக பாதிப்பு, அதிக இறைச்சி உணவு அல்லது கடுமையான உடற்பயிற்சி, சில மருந்துகள்.",
+                  "நீரிழிவு, உயர் இரத்த அழுத்தம், குடும்பத்தில் சிறுநீரக நோய், வலி மாத்திரைகளை அடிக்கடி எடுத்தல்.",
+                  "போதுமான தண்ணீர் குடிக்கவும். மருத்துவர் சொல்லாமல் வலி மாத்திரைகளை எடுக்க வேண்டாம்.",
+                  "விரைவில் மருத்துவரை அணுகவும். கால் வீக்கம், சிறுநீர் குறைவு இருந்தால் உடனே காட்டவும்."),
+    },
+    "Vitamin D": {
+        "LOW": E("வைட்டமின் D குறைவாக உள்ளது. எலும்பு வலி, சோர்வு, தசை வலிக்குக் காரணமாகலாம்.",
+                 "சூரிய ஒளி குறைவு, உணவில் குறைவு, வயது, அதிக உடல் எடை.",
+                 "வீட்டுக்குள் அதிக நேரம், மூடிய ஆடை, கருமையான தோல், வெயிலில் செல்லாமை.",
+                 "காலை அல்லது மாலை இளம் வெயிலில் தினமும் 15-20 நிமிடம் இருக்கலாம். முட்டை மஞ்சள் கரு, மீன், பால், காளான் உதவும். சப்ளிமெண்ட் அளவை மருத்துவர்தான் தீர்மானிக்க வேண்டும்.",
+                 "எலும்பு வலி தொடர்ந்தால் மருத்துவரை அணுகி சரியான அளவில் சப்ளிமெண்ட் பெறவும்."),
+        "HIGH": E("வைட்டமின் D அதிகமாக உள்ளது. பொதுவாக அதிக சப்ளிமெண்ட் எடுப்பதால் இப்படி வரலாம்.", "அதிக அளவு வைட்டமின் D மாத்திரைகள்.", "", "",
+                  "சப்ளிமெண்ட் எடுத்துக்கொண்டிருந்தால் அளவை மருத்துவரிடம் உறுதிசெய்யுங்கள்."),
+    },
+    "SGPT (ALT)": {
+        "HIGH": E("கல்லீரல் நொதி (SGPT/ALT) அதிகமாக உள்ளது. கல்லீரலில் வீக்கம் அல்லது பாதிப்பு இருக்கலாம்.",
+                  "கொழுப்பு கல்லீரல், மது, ஹெபடைடிஸ் தொற்று, சில மருந்துகள்.",
+                  "உடல் பருமன், நீரிழிவு, அதிக மது, கொழுப்பு அதிகமான உணவு.", LIVER_DIET, LIVER_DOC),
+    },
+    "SGOT (AST)": {
+        "HIGH": E("நொதி (SGOT/AST) அதிகமாக உள்ளது. கல்லீரல் அல்லது தசை பாதிப்பைக் குறிக்கலாம்.",
+                  "கொழுப்பு கல்லீரல், மது, ஹெபடைடிஸ் தொற்று, கடுமையான உடற்பயிற்சி, சில மருந்துகள்.",
+                  "உடல் பருமன், நீரிழிவு, அதிக மது.", LIVER_DIET, LIVER_DOC),
+    },
+})
 DEFAULT = E("இந்த மதிப்பு இயல்பு வரம்புக்கு வெளியே உள்ளது.", "", "", "", "இதுபற்றி மருத்துவரிடம் கேளுங்கள்.")
 STATUS_TA = {"LOW": "குறைவு", "HIGH": "அதிகம்", "NORMAL": "இயல்பு"}
 
@@ -112,38 +203,69 @@ ALIASES = [
     ("RBC Count", r"\brbc\b|red blood cell|red cell count|erythrocyte"),
     ("Hematocrit (PCV)", r"h(?:a)?ematocrit|\bpcv\b|packed cell"),
     ("MCV", r"\bmcv\b|mean corpuscular volume"),
+    ("MCH", r"\bmch\b"),
+    ("MCHC", r"\bmchc\b"),
     ("WBC Count", r"\bwbc\b|white blood cell|total leu[ck]ocyte|\btlc\b"),
     ("Platelet Count", r"platelet|\bplt\b"),
     ("Neutrophils", r"neutrophil|polymorph"),
     ("Lymphocytes", r"lymphocyte"),
+    ("Monocytes", r"monocyte"),
+    ("Eosinophils", r"eosinophil"),
+    ("Basophils", r"basophil"),
     ("Fasting Blood Sugar", r"fasting\s+(?:blood\s+)?(?:sugar|glucose)|\bfbs\b|glucose\W+fasting"),
+    ("HbA1c", r"hba1c|hb\s*a1c|\ba1c\b|glyc\w*ated\s+h(?:a)?emoglobin"),
     ("Total Cholesterol", r"total\s+cholesterol|cholesterol\W+total|^\W*cholesterol\b"),
+    ("Triglycerides", r"triglyceride"),
+    ("HDL Cholesterol", r"\bhdl\b"),
+    ("LDL Cholesterol", r"\bldl\b"),
+    ("Creatinine", r"creatinine"),
+    ("Vitamin D", r"vitamin\s*d\b|25\W*(?:oh|hydroxy)"),
+    ("SGPT (ALT)", r"\bsgpt\b|\balt\b|alanine\s+(?:amino|trans)"),
+    ("SGOT (AST)", r"\bsgot\b|\bast\b|aspartate\s+(?:amino|trans)"),
     ("TSH", r"\btsh\b|thyroid stimulating"),
 ]
 NUM = r"\d+(?:\.\d+)?"
 RANGE = re.compile(rf"({NUM})\s*(?:-|–|—|to)\s*({NUM})", re.I)
 BELOW = re.compile(rf"(?:below|less than|up to|upto|<)\s*=?\s*({NUM})", re.I)
-
+ABOVE = re.compile(rf"(?:above|greater than|more than|>)\s*=?\s*({NUM})", re.I)
+DIFF = ("Neutrophils", "Lymphocytes", "Monocytes", "Eosinophils", "Basophils")
+LIPID = ("Total Cholesterol", "Triglycerides", "HDL Cholesterol", "LDL Cholesterol")
 
 TYPICAL = {
     "Hemoglobin": ((10, 15), (14, 19)),
     "RBC Count": ((3.5, 4.8), (5, 6.5)),
     "Hematocrit (PCV)": ((33, 42), (43, 55)),
     "MCV": ((75, 85), (95, 105)),
+    "MCH": ((24, 28), (30, 35)),
+    "MCHC": ((30, 33), (34, 38)),
     "WBC Count": ((3000, 5500), (9000, 12500)),
     "Platelet Count": ((100000, 175000), (350000, 500000)),
     "Neutrophils": ((35, 50), (65, 80)),
     "Lymphocytes": ((15, 25), (35, 50)),
+    "Monocytes": ((0, 4), (5, 12)),
+    "Eosinophils": ((0, 2), (3, 8)),
+    "Basophils": ((0, 1), (1, 3)),
     "Fasting Blood Sugar": ((60, 75), (95, 126)),
+    "HbA1c": ((0, 4.6), (5.5, 7)),
     "Total Cholesterol": ((0, 0), (170, 250)),
+    "Triglycerides": ((0, 60), (120, 200)),
+    "HDL Cholesterol": ((30, 60), (55, 10000000)),
+    "LDL Cholesterol": ((0, 0), (70, 160)),
+    "Creatinine": ((0.3, 0.9), (1, 1.5)),
+    "Vitamin D": ((10, 32), (40, 110)),
+    "SGPT (ALT)": ((0, 15), (30, 60)),
+    "SGOT (AST)": ((0, 15), (30, 60)),
     "TSH": ((0.1, 0.7), (3.5, 6)),
 }
 
-
 LIMITS = {
     "Hemoglobin": (3, 25), "RBC Count": (1, 9), "Hematocrit (PCV)": (10, 70), "MCV": (50, 130),
+    "MCH": (10, 50), "MCHC": (20, 45),
     "WBC Count": (500, 100000), "Platelet Count": (5000, 1500000), "Neutrophils": (0, 100),
-    "Lymphocytes": (0, 100), "Fasting Blood Sugar": (30, 700), "Total Cholesterol": (50, 600),
+    "Lymphocytes": (0, 100), "Monocytes": (0, 50), "Eosinophils": (0, 60), "Basophils": (0, 20),
+    "Fasting Blood Sugar": (30, 700), "HbA1c": (3, 20), "Total Cholesterol": (50, 600),
+    "Triglycerides": (20, 5000), "HDL Cholesterol": (5, 150), "LDL Cholesterol": (10, 600),
+    "Creatinine": (0.1, 25), "Vitamin D": (1, 400), "SGPT (ALT)": (1, 6000), "SGOT (AST)": (1, 6000),
     "TSH": (0.01, 100),
 }
 
@@ -159,19 +281,41 @@ def plausible(key, value, lo, hi):
     return False
 
 
-def parse_line(line):
+def clean_line(line):
     line = line.replace("|", " ")
-    line = re.sub(r"(?<=\d),(?=\d{3})", "", line)
+    return re.sub(r"(?<=\d),(?=\d{3})", "", line)
+
+
+def find_range(after):
+    found = []
+    m = RANGE.search(after)
+    if m:
+        found.append((m.start(), float(m.group(1)), float(m.group(2))))
+    m = BELOW.search(after)
+    if m:
+        found.append((m.start(), 0.0, float(m.group(1))))
+    m = ABOVE.search(after)
+    if m:
+        found.append((m.start(), float(m.group(1)), 1000000.0))
+    return min(found)[1:] if found else None
+
+
+def parse_line(line):
+    line = clean_line(line)
     low = line.lower()
     for key, pat in ALIASES:
         m = re.search(pat, line, re.I)
         if not m:
             continue
-        if key == "Total Cholesterol" and re.search(r"hdl|ldl|vldl|ratio", low):
+        if key in LIPID and re.search(r"ratio|\bnon\b|non-|vldl", low):
             continue
-        if key == "Neutrophils" and "absolute" in low:
+        if key == "Total Cholesterol" and re.search(r"hdl|ldl", low):
             continue
-        if key == "Hemoglobin" and re.search(r"a1c|mean cell|corpuscular|\bmch", low):
+        if key in DIFF and "absolute" in low:
+            continue
+        if key == "Hemoglobin" and re.search(r"a1c|glyc|mean cell|corpuscular|\bmch", low):
+            continue
+        if key == "Creatinine" and re.search(r"clearance|ratio|urine", low):
             continue
         rest = re.sub(r"^\s*\([^)]*\)", "", line[m.end():])
         vm = re.search(NUM, rest)
@@ -179,21 +323,36 @@ def parse_line(line):
             return None
         value = float(vm.group())
         after = rest[vm.end():]
-        rm, bm = RANGE.search(after), BELOW.search(after)
-        if rm and (not bm or rm.start() < bm.start()):
-            lo, hi = float(rm.group(1)), float(rm.group(2))
-        elif bm:
-            lo, hi = 0.0, float(bm.group(1))
-        else:
+        rng = find_range(after)
+        if not rng:
             return None
+        lo, hi = rng
         tokens = after.split()
-        unit = tokens[0] if tokens and not re.match(r"^[\d<>.\-–]+$|^(h|l|high|low|below)$", tokens[0], re.I) else ""
+        unit = tokens[0] if tokens and not re.match(r"^[\d<>.\-–]+$|^(h|l|high|low|below|above)$", tokens[0], re.I) else ""
         if unit.lower().startswith("millio"):
             unit = "million/cumm"
         elif unit.startswith("%"):
             unit = "%"
         return key, value, unit, lo, hi
     return None
+
+
+def unknown_test_name(line):
+    line = clean_line(line)
+    m = re.search(r"\d", line)
+    if not m or re.search(r"\d{1,2}[-/]\d{1,2}[-/]\d{2,4}", line):
+        return None
+    if any(re.search(pat, line, re.I) for _, pat in ALIASES):
+        return None
+    after = line[m.start():]
+    if not (RANGE.search(after) or BELOW.search(after) or ABOVE.search(after)):
+        return None
+    name = re.sub(r"[^A-Za-z() ,./\-]", " ", line[:m.start()])
+    name = re.sub(r"\s+[HL]\s*$", "", name.strip())
+    name = re.sub(r"\s+", " ", name).strip(" ,.:-/")
+    if len(re.findall(r"[A-Za-z]", name)) < 4:
+        return None
+    return name[:40]
 
 
 def ocr_image(img):
@@ -220,19 +379,27 @@ def read_text(uploaded):
 def repair(key, value, lo, hi):
     if plausible(key, value, lo, hi):
         return value, lo, hi
-    if lo.is_integer() and hi.is_integer() and lo >= 10 and hi >= 10:
-        if plausible(key, value, lo / 10, hi / 10):
-            return value, lo / 10, hi / 10
-        if value.is_integer() and value >= 10 and plausible(key, value / 10, lo / 10, hi / 10):
-            return value / 10, lo / 10, hi / 10
+    for fl, fh in ((0.1, 0.1), (1, 0.1), (0.1, 1)):
+        if (fl != 1 and not (lo.is_integer() and lo >= 10)) or (fh != 1 and not (hi.is_integer() and hi >= 10)):
+            continue
+        for fv in (1, 0.1):
+            if fv != 1 and not (value.is_integer() and value >= 10):
+                continue
+            if plausible(key, value * fv, lo * fl, hi * fh):
+                return round(value * fv, 2), round(lo * fl, 2), round(hi * fh, 2)
     return None
 
 
 def analyze_text(text):
-    rows, seen, doubtful = [], set(), []
+    rows, seen, doubtful, unknown = [], set(), [], []
     for line in text.split("\n"):
         res = parse_line(line)
-        if not res or res[0] in seen:
+        if not res:
+            name = unknown_test_name(line)
+            if name and name.lower() not in [u.lower() for u in unknown]:
+                unknown.append(name)
+            continue
+        if res[0] in seen:
             continue
         fixed = repair(res[0], res[1], res[3], res[4])
         if not fixed:
@@ -245,7 +412,7 @@ def analyze_text(text):
     if not df.empty:
         df["Status"] = df.apply(
             lambda r: "LOW" if r.Value < r.Low else ("HIGH" if r.Value > r.High else "NORMAL"), axis=1)
-    return df, doubtful
+    return df, doubtful, unknown[:10]
 
 
 def show(r):
@@ -278,7 +445,7 @@ if uploaded:
     try:
         with st.spinner("அறிக்கையைப் படிக்கிறோம்..."):
             text, source = read_text(uploaded)
-            df, doubtful = analyze_text(text)
+            df, doubtful, unknown = analyze_text(text)
     except Exception as e:
         st.error("கோப்பைப் படிக்க முடியவில்லை. தெளிவான PDF அல்லது புகைப்படத்தை முயற்சிக்கவும்.")
         st.caption(f"தொழில்நுட்பப் பிழை: {e}")
@@ -294,6 +461,8 @@ if uploaded:
         if source == "ocr":
             st.markdown("**படிக்கப்பட்ட மதிப்புகள் (அசல் அறிக்கையுடன் சரிபார்க்கவும்):**")
             st.dataframe(df[["Test", "Value", "Unit", "Low", "High"]])
+        if unknown:
+            st.warning("இந்த அறிக்கையில் உள்ள இந்தப் பரிசோதனைகளை இந்த செயலியால் விளக்க முடியவில்லை: " + ", ".join(unknown) + ". இவற்றுக்கு அசல் அறிக்கையைப் பார்த்து மருத்துவரிடம் கேளுங்கள்.")
         if doubtful:
             st.warning("இந்த மதிப்புகளைச் சரியாகப் படிக்க முடியவில்லை, அதனால் அவற்றை விட்டுவிட்டோம்: " + ", ".join(doubtful) + ". அசல் அறிக்கையைப் பார்க்கவும்.")
         st.subheader(f"சுருக்கம்: {len(df)} மதிப்புகளில் {n} இயல்பாக இல்லை")
