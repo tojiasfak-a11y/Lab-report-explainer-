@@ -171,7 +171,7 @@ def parse_line(line):
             continue
         if key == "Neutrophils" and "absolute" in low:
             continue
-        if key == "Hemoglobin" and "a1c" in low:
+        if key == "Hemoglobin" and re.search(r"a1c|mean cell|corpuscular|\bmch", low):
             continue
         rest = re.sub(r"^\s*\([^)]*\)", "", line[m.end():])
         vm = re.search(NUM, rest)
@@ -188,6 +188,10 @@ def parse_line(line):
             return None
         tokens = after.split()
         unit = tokens[0] if tokens and not re.match(r"^[\d<>.\-–]+$|^(h|l|high|low|below)$", tokens[0], re.I) else ""
+        if unit.lower().startswith("millio"):
+            unit = "million/cumm"
+        elif unit.startswith("%"):
+            unit = "%"
         return key, value, unit, lo, hi
     return None
 
@@ -213,17 +217,29 @@ def read_text(uploaded):
     return ocr_image(Image.open(io.BytesIO(data))), "ocr"
 
 
+def repair(key, value, lo, hi):
+    if plausible(key, value, lo, hi):
+        return value, lo, hi
+    if lo.is_integer() and hi.is_integer() and lo >= 10 and hi >= 10:
+        if plausible(key, value, lo / 10, hi / 10):
+            return value, lo / 10, hi / 10
+        if value.is_integer() and value >= 10 and plausible(key, value / 10, lo / 10, hi / 10):
+            return value / 10, lo / 10, hi / 10
+    return None
+
+
 def analyze_text(text):
     rows, seen, doubtful = [], set(), []
     for line in text.split("\n"):
         res = parse_line(line)
         if not res or res[0] in seen:
             continue
-        if not plausible(res[0], res[1], res[3], res[4]):
+        fixed = repair(res[0], res[1], res[3], res[4])
+        if not fixed:
             doubtful.append(res[0])
             continue
         seen.add(res[0])
-        rows.append(res)
+        rows.append((res[0], fixed[0], res[2], fixed[1], fixed[2]))
     doubtful = sorted(set(doubtful) - seen)
     df = pd.DataFrame(rows, columns=["Test", "Value", "Unit", "Low", "High"])
     if not df.empty:
@@ -278,13 +294,13 @@ if uploaded:
         if source == "ocr":
             st.markdown("**படிக்கப்பட்ட மதிப்புகள் (அசல் அறிக்கையுடன் சரிபார்க்கவும்):**")
             st.dataframe(df[["Test", "Value", "Unit", "Low", "High"]])
+        if doubtful:
+            st.warning("இந்த மதிப்புகளைச் சரியாகப் படிக்க முடியவில்லை, அதனால் அவற்றை விட்டுவிட்டோம்: " + ", ".join(doubtful) + ". அசல் அறிக்கையைப் பார்க்கவும்.")
         st.subheader(f"சுருக்கம்: {len(df)} மதிப்புகளில் {n} இயல்பாக இல்லை")
         for _, r in df.iterrows():
             show(r)
         if n:
             st.info("பொதுவான குறிப்புகள்: தினமும் 30 நிமிடம் நடைப்பயிற்சி, போதுமான தண்ணீர், 7-8 மணி நேர உறக்கம், சரிவிகித உணவு. இயல்பாக இல்லாத மதிப்புகளுடன் உங்கள் மருத்துவரைச் சந்திக்கவும்.")
-        if doubtful:
-            st.warning("இந்த மதிப்புகளைச் சரியாகப் படிக்க முடியவில்லை, அதனால் அவற்றை விட்டுவிட்டோம்: " + ", ".join(doubtful) + ". அசல் அறிக்கையைப் பார்க்கவும்.")
         with st.expander("முழு அட்டவணை"):
             st.dataframe(df)
     with st.expander("படிக்கப்பட்ட உரை (சரிபார்க்க)"):
