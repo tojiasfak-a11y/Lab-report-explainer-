@@ -1,3 +1,4 @@
+import html
 import io
 import re
 
@@ -452,12 +453,125 @@ def analyze_text(text):
     return df, doubtful, unknown[:10]
 
 
-def show(r):
-    head = f"**{r.Test}**: {r.Value:g} {r.Unit} (இயல்பு: {r.Low:g} - {r.High:g}) → **{STATUS_TA[r.Status]}**"
-    if r.Status == "NORMAL":
-        st.success(head)
-        return
-    st.error(head)
+TA_NAME = {
+    "Hemoglobin": "ஹீமோகுளோபின்",
+    "RBC Count": "சிவப்பணுக்கள் எண்ணிக்கை",
+    "Hematocrit (PCV)": "ஹீமாடோகிரிட் (PCV)",
+    "MCV": "MCV (சிவப்பணு அளவு)",
+    "MCH": "MCH (சிவப்பணுவில் ஹீமோகுளோபின்)",
+    "MCHC": "MCHC (ஹீமோகுளோபின் செறிவு)",
+    "WBC Count": "வெள்ளையணுக்கள் எண்ணிக்கை",
+    "Platelet Count": "இரத்தத் தட்டணுக்கள்",
+    "Neutrophils": "நியூட்ரோஃபில்",
+    "Lymphocytes": "லிம்போசைட்",
+    "Monocytes": "மோனோசைட்",
+    "Eosinophils": "ஈசினோஃபில்",
+    "Basophils": "பேசோஃபில்",
+    "Fasting Blood Sugar": "வெறும் வயிற்றுச் சர்க்கரை",
+    "HbA1c": "HbA1c (3 மாதச் சர்க்கரை)",
+    "Total Cholesterol": "மொத்த கொலஸ்ட்ரால்",
+    "Triglycerides": "டிரைகிளிசரைடு",
+    "HDL Cholesterol": "HDL கொலஸ்ட்ரால்",
+    "LDL Cholesterol": "LDL கொலஸ்ட்ரால்",
+    "Creatinine": "கிரியாட்டினின்",
+    "Vitamin D": "வைட்டமின் D",
+    "SGPT (ALT)": "SGPT (ALT) கல்லீரல் நொதி",
+    "SGOT (AST)": "SGOT (AST) நொதி",
+    "TSH": "தைராய்டு (TSH)",
+}
+BADGE = {"LOW": ("↓ குறைவு", "low"), "HIGH": ("↑ அதிகம்", "high"), "NORMAL": ("✓ இயல்பு", "ok")}
+
+CSS = """<style>
+.lr-hero{background:linear-gradient(135deg,#0f766e,#0e7490 55%,#1d4ed8);color:#fff;border-radius:16px;padding:20px 18px;margin:0 0 14px 0}
+.lr-title{font-size:1.55rem;font-weight:800;line-height:1.35;margin:0 0 6px 0}
+.lr-sub{font-size:.95rem;opacity:.93;line-height:1.5}
+.lr-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.lr-card{border-radius:12px;padding:10px 4px;text-align:center;border:1px solid rgba(128,128,128,.28);background:rgba(128,128,128,.07)}
+.lr-card b{display:block;font-size:1.6rem;line-height:1.2}
+.lr-card span{font-size:.76rem;opacity:.85}
+.lr-card.ok b{color:#16a34a}.lr-card.low b{color:#d97706}.lr-card.high b{color:#dc2626}
+.lr-wrap{overflow-x:auto;border:1px solid rgba(128,128,128,.28);border-radius:12px;margin:6px 0 10px 0}
+table.lr{width:100%;border-collapse:collapse;font-size:.88rem}
+table.lr th{background:rgba(128,128,128,.16);text-align:left;padding:8px;font-size:.76rem}
+table.lr td{padding:8px;vertical-align:top;border:0}
+table.lr tr.main td{padding-bottom:3px}
+table.lr tr.barrow td{padding:0 8px 10px 8px}
+table.lr tr.low td{background:rgba(245,158,11,.11)}
+table.lr tr.high td{background:rgba(239,68,68,.11)}
+.en,.un{font-size:.72rem;opacity:.72}
+.bd{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.78rem;font-weight:700;white-space:nowrap}
+.bd.ok{background:rgba(22,163,74,.16);color:#16a34a}.bd.low{background:rgba(217,119,6,.2);color:#d97706}.bd.high{background:rgba(220,38,38,.16);color:#dc2626}
+.bar{position:relative;height:8px;border-radius:99px;background:rgba(128,128,128,.28)}
+.zone{position:absolute;top:0;bottom:0;border-radius:99px;background:rgba(22,163,74,.6)}
+.mk{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+.mk.ok{background:#16a34a}.mk.low{background:#d97706}.mk.high{background:#dc2626}
+.lr-legend{font-size:.76rem;opacity:.75;margin:2px 0 8px 0}
+</style>"""
+
+HERO = (
+    '<div class="lr-hero"><div class="lr-title">🩺 ஆய்வக அறிக்கை விளக்கி</div>'
+    '<div class="lr-sub">உங்கள் இரத்தப் பரிசோதனை அறிக்கையைப் (PDF அல்லது புகைப்படம்) பதிவேற்றுங்கள். '
+    'ஒவ்வொரு மதிப்பும் இயல்பு வரம்புடன் ஒப்பிடப்பட்டு, எளிய தமிழில் விளக்கப்படும்.</div></div>'
+)
+
+
+def fmt(x):
+    return f"{x:g}"
+
+
+def bar_html(r, cls):
+    lo, hi, v = float(r.Low), float(r.High), float(r.Value)
+    if hi >= 1000000:
+        mn, mx = lo * 0.6, max(v * 1.15, lo * 1.6)
+        end = None
+    else:
+        span = hi - lo
+        mn = 0.0 if lo == 0 else lo - span * 0.5
+        mx = hi + span * 0.5
+        mn, mx = min(mn, v - span * 0.1), max(mx, v + span * 0.1)
+        end = hi
+    rng = (mx - mn) or 1.0
+    pos = lambda x: max(0.0, min(100.0, (x - mn) / rng * 100))
+    left = pos(lo)
+    width = (100.0 - left) if end is None else pos(end) - left
+    return (f'<div class="bar"><div class="zone" style="left:{left:.1f}%;width:{width:.1f}%"></div>'
+            f'<div class="mk {cls}" style="left:{pos(v):.1f}%"></div></div>')
+
+
+def summary_html(df):
+    n = len(df)
+    low = int((df.Status == "LOW").sum())
+    high = int((df.Status == "HIGH").sum())
+    ok = n - low - high
+    cards = [("", n, "மொத்தம்"), ("ok", ok, "இயல்பு"), ("low", low, "குறைவு"), ("high", high, "அதிகம்")]
+    return '<div class="lr-cards">' + "".join(
+        f'<div class="lr-card {c}"><b>{v}</b><span>{t}</span></div>' for c, v, t in cards) + "</div>"
+
+
+def table_html(df):
+    rows = []
+    for r in df.itertuples():
+        label, cls = BADGE[r.Status]
+        ta = html.escape(TA_NAME.get(r.Test, r.Test))
+        en = html.escape(r.Test)
+        unit = html.escape(str(r.Unit))
+        row_cls = "" if cls == "ok" else cls
+        if r.High >= 1000000:
+            rng = f"≥ {fmt(r.Low)}"
+        elif r.Low == 0:
+            rng = f"&lt; {fmt(r.High)}"
+        else:
+            rng = f"{fmt(r.Low)} – {fmt(r.High)}"
+        rows.append(
+            f'<tr class="main {row_cls}"><td><b>{ta}</b><br><span class="en">{en}</span></td>'
+            f'<td><b>{fmt(r.Value)}</b><br><span class="un">{unit}</span></td>'
+            f'<td>{rng}</td><td><span class="bd {cls}">{label}</span></td></tr>'
+            f'<tr class="barrow {row_cls}"><td colspan="4">{bar_html(r, cls)}</td></tr>')
+    head = "<tr><th>பரிசோதனை</th><th>உங்கள் மதிப்பு</th><th>இயல்பு வரம்பு</th><th>நிலை</th></tr>"
+    return f'<div class="lr-wrap"><table class="lr"><thead>{head}</thead><tbody>{"".join(rows)}</tbody></table></div>'
+
+
+def explain_box(r):
     info = INFO.get(r.Test, {}).get(r.Status, DEFAULT)
     st.markdown(f"**பொருள்:** {info['meaning']}")
     if info["reasons"]:
@@ -468,11 +582,9 @@ def show(r):
         st.markdown(f"**உணவு / வாழ்க்கை முறை:** {info['diet']}")
     if info["doctor"]:
         st.markdown(f"**மருத்துவரை எப்போது அணுகவும்:** {info['doctor']}")
-    st.divider()
 
 
-st.title("🩺 ஆய்வக அறிக்கை விளக்கி")
-st.write("உங்கள் இரத்தப் பரிசோதனை அறிக்கையின் (PDF அல்லது புகைப்படம்) ஒவ்வொரு மதிப்பும் என்ன அர்த்தம் என்பதை எளிய தமிழில் விளக்குகிறோம்.")
+st.markdown(CSS + HERO, unsafe_allow_html=True)
 st.warning("இது மருத்துவ ஆலோசனை அல்ல. நோயைக் கண்டறிவதோ சிகிச்சை அளிப்பதோ இந்த செயலியின் வேலை அல்ல. சந்தேகம் இருந்தால் மருத்துவரை அணுகவும். நெஞ்சு வலி, மூச்சுத்திணறல், மயக்கம் போன்ற அவசர நிலையில் உடனே மருத்துவ உதவி பெறவும்.")
 st.info("உங்கள் அறிக்கையில் பெயர், தொலைபேசி எண் இருந்தால் அவற்றை நீக்கிவிட்டுப் பதிவேற்றுவது நல்லது. புகைப்படம் எடுத்தால் நல்ல வெளிச்சத்தில், நேராக, தெளிவாக எடுக்கவும்.")
 
@@ -494,22 +606,27 @@ if uploaded:
     if df.empty:
         st.error("இந்த அறிக்கையில் பரிசோதனை மதிப்புகளைப் படிக்க முடியவில்லை. தெளிவான புகைப்படம் அல்லது டிஜிட்டல் PDF-ஐ முயற்சிக்கவும்.")
     else:
-        n = int((df.Status != "NORMAL").sum())
-        if source == "ocr":
-            st.markdown("**படிக்கப்பட்ட மதிப்புகள் (அசல் அறிக்கையுடன் சரிபார்க்கவும்):**")
-            st.dataframe(df[["Test", "Value", "Unit", "Low", "High"]])
         if unknown:
             st.warning("இந்த அறிக்கையில் உள்ள இந்தப் பரிசோதனைகளை இந்த செயலியால் விளக்க முடியவில்லை: " + ", ".join(unknown) + ". இவற்றுக்கு அசல் அறிக்கையைப் பார்த்து மருத்துவரிடம் கேளுங்கள்.")
         if doubtful:
             st.warning("இந்த மதிப்புகளைச் சரியாகப் படிக்க முடியவில்லை, அதனால் அவற்றை விட்டுவிட்டோம்: " + ", ".join(doubtful) + ". அசல் அறிக்கையைப் பார்க்கவும்.")
-        st.subheader(f"சுருக்கம்: {len(df)} மதிப்புகளில் {n} இயல்பாக இல்லை")
+
+        st.markdown(summary_html(df) + table_html(df), unsafe_allow_html=True)
+        st.markdown('<div class="lr-legend">பச்சைப் பகுதி = இயல்பு வரம்பு. புள்ளி = உங்கள் மதிப்பு.</div>', unsafe_allow_html=True)
         st.caption("அறிக்கையில் வயது வாரியான வரம்புகள் இருந்தால் 18 வயதுக்கு மேற்பட்டவர்களுக்கான வரம்பு எடுக்கப்படும். மதிப்பும் வரம்பும் வெவ்வேறு அலகுகளில் (ஆயிரம் / லட்சம்) இருந்தால் ஒரே அலகாக மாற்றிக் காட்டப்படும்.")
-        for _, r in df.iterrows():
-            show(r)
-        if n:
+
+        abn = df[df.Status != "NORMAL"]
+        if len(abn):
+            st.subheader("விளக்கங்கள்")
+            st.caption("இயல்பாக இல்லாத மதிப்புகளுக்கு மட்டும். தட்டினால் விரியும்.")
+            for r in abn.itertuples():
+                arrow = "↓" if r.Status == "LOW" else "↑"
+                with st.expander(f"{arrow} {TA_NAME.get(r.Test, r.Test)} · {fmt(r.Value)} {r.Unit}"):
+                    explain_box(r)
             st.info("பொதுவான குறிப்புகள்: தினமும் 30 நிமிடம் நடைப்பயிற்சி, போதுமான தண்ணீர், 7-8 மணி நேர உறக்கம், சரிவிகித உணவு. இயல்பாக இல்லாத மதிப்புகளுடன் உங்கள் மருத்துவரைச் சந்திக்கவும்.")
-        with st.expander("முழு அட்டவணை"):
-            st.dataframe(df)
+        else:
+            st.success("படிக்கப்பட்ட எல்லா மதிப்புகளும் இயல்பு வரம்புக்குள் உள்ளன. இருந்தாலும் அறிகுறிகள் இருந்தால் மருத்துவரைச் சந்திக்கவும்.")
+
     with st.expander("படிக்கப்பட்ட உரை (சரிபார்க்க)"):
         st.text(text)
     st.caption("உங்கள் அறிக்கை எங்கும் சேமிக்கப்படாது.")
