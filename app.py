@@ -462,6 +462,32 @@ def analyze_text(text):
     return df, doubtful, unknown[:10]
 
 
+EN_NAME = {
+    "Hemoglobin": "Hemoglobin",
+    "RBC Count": "Red blood cell count",
+    "Hematocrit (PCV)": "Hematocrit (PCV)",
+    "MCV": "MCV (red cell size)",
+    "MCH": "MCH (hemoglobin per red cell)",
+    "MCHC": "MCHC (hemoglobin concentration)",
+    "WBC Count": "White blood cell count",
+    "Platelet Count": "Platelet count",
+    "Neutrophils": "Neutrophils",
+    "Lymphocytes": "Lymphocytes",
+    "Monocytes": "Monocytes",
+    "Eosinophils": "Eosinophils",
+    "Basophils": "Basophils",
+    "Fasting Blood Sugar": "Fasting blood sugar",
+    "HbA1c": "HbA1c (3-month sugar)",
+    "Total Cholesterol": "Total cholesterol",
+    "Triglycerides": "Triglycerides",
+    "HDL Cholesterol": "HDL cholesterol (good)",
+    "LDL Cholesterol": "LDL cholesterol (bad)",
+    "Creatinine": "Creatinine (kidney)",
+    "Vitamin D": "Vitamin D",
+    "SGPT (ALT)": "SGPT / ALT (liver enzyme)",
+    "SGOT (AST)": "SGOT / AST (enzyme)",
+    "TSH": "TSH (thyroid)",
+}
 TA_NAME = {
     "Hemoglobin": "ஹீமோகுளோபின்",
     "RBC Count": "சிவப்பணுக்கள் எண்ணிக்கை",
@@ -488,7 +514,236 @@ TA_NAME = {
     "SGOT (AST)": "SGOT (AST) நொதி",
     "TSH": "தைராய்டு (TSH)",
 }
-BADGE = {"LOW": ("↓ குறைவு", "low"), "HIGH": ("↑ அதிகம்", "high"), "NORMAL": ("✓ இயல்பு", "ok")}
+NAMES = {"ta": TA_NAME, "en": EN_NAME}
+
+IRON_EN = "Include green leafy vegetables, beetroot, dates, chickpeas, lentils, eggs and jaggery. Having lemon or amla with meals helps your body absorb iron."
+ANEMIA_EN = "See a doctor soon if you feel tired, breathless or dizzy, or if the value is very low."
+DEHYD_EN = "Dehydration, smoking, or living at high altitude can cause this."
+CHOL_EN = "Cut down on fried food, ghee, vanaspati and fatty meat. Add oats, fruits, vegetables and nuts. Walk daily."
+LIPRISK_EN = "Family history of heart disease, obesity, smoking, diabetes, high blood pressure."
+SUGRISK_EN = "Family history of diabetes, obesity, lack of exercise, a lot of sweet food."
+SUGDIET_EN = "Cut down on sweets, soft drinks and white rice. Include vegetables, greens and millets such as ragi and kambu. Walk 30 minutes daily."
+LIVDIET_EN = "Avoid alcohol completely. Cut down on fried and oily food. Eat vegetables and fruits and walk daily. Do not take herbal products or tablets without a doctor's advice."
+LIVDOC_EN = "See a doctor immediately if your eyes or skin turn yellow, or you have stomach pain or repeated vomiting. Otherwise, see a doctor for further tests."
+OTHER_EN = "A doctor will interpret this together with your other blood values. Please ask your doctor."
+VITB_EN = "Eggs, milk, curd, lentils and green leafy vegetables can help."
+SEEDOC_EN = "Please see a doctor to find the cause."
+WATER_EN = "Drink enough water."
+
+INFO_EN = {
+    "Hemoglobin": {
+        "LOW": E("Your hemoglobin is lower than normal. This can be a sign of anemia.",
+                 "Common causes are iron, vitamin B12 or folate deficiency and heavy menstrual bleeding.",
+                 "Poor diet, blood loss, pregnancy, intestinal worms.", IRON_EN, ANEMIA_EN),
+        "HIGH": E("Your hemoglobin is higher than normal.", DEHYD_EN, "", WATER_EN, SEEDOC_EN),
+    },
+    "RBC Count": {
+        "LOW": E("Your red blood cell count is low. This may be linked to anemia.",
+                 "Iron or vitamin B12 deficiency, or blood loss.", "", IRON_EN, ANEMIA_EN),
+        "HIGH": E("Your red blood cell count is high.", DEHYD_EN, "", WATER_EN, SEEDOC_EN),
+    },
+    "Hematocrit (PCV)": {
+        "LOW": E("The share of red cells in your blood is low. It usually goes along with anemia.",
+                 "Iron deficiency or blood loss.", "", IRON_EN, ANEMIA_EN),
+        "HIGH": E("The share of red cells in your blood is high. Dehydration can cause this.",
+                  DEHYD_EN, "", WATER_EN, "See a doctor if it stays high."),
+    },
+    "MCV": {
+        "LOW": E("Your red blood cells are smaller than normal.",
+                 "Iron deficiency, or inherited conditions such as thalassemia.", "", IRON_EN,
+                 "Ask your doctor whether an iron test (ferritin) is needed."),
+        "HIGH": E("Your red blood cells are larger than normal.",
+                  "Vitamin B12 or folate deficiency, heavy alcohol use, thyroid problems.", "", VITB_EN,
+                  "Ask your doctor whether a B12 test is needed."),
+    },
+    "MCH": {
+        "LOW": E("Each red cell carries less hemoglobin than normal.", "Iron deficiency.", "", IRON_EN,
+                 "Discuss with your doctor along with your hemoglobin and MCV."),
+        "HIGH": E("Each red cell carries more hemoglobin than normal.", "Vitamin B12 or folate deficiency.", "", VITB_EN,
+                  "Ask your doctor whether a B12 test is needed."),
+    },
+    "MCHC": {
+        "LOW": E("The hemoglobin concentration in your red cells is low (paler red cells).", "Iron deficiency.", "", IRON_EN,
+                 "Discuss with your doctor along with your hemoglobin and MCV."),
+        "HIGH": E("The hemoglobin concentration in your red cells is slightly high.",
+                  "Variation in how the blood sample was collected or tested, or rarely certain red cell conditions.", "", "",
+                  "If your other blood values are normal, this is often not significant. Ask your doctor to confirm."),
+    },
+    "WBC Count": {
+        "LOW": E("Your white blood cell count is low. This may mean reduced immunity.",
+                 "Viral infection, some medicines, poor nutrition.", "", "Eat a balanced, nutritious diet and get enough rest.",
+                 "See a doctor if you get frequent infections or fever."),
+        "HIGH": E("Your white blood cell count is high. There may be an infection or inflammation.",
+                  "Bacterial infection, inflammation, stress, smoking.", "", "", "See a doctor if you have fever or pain."),
+    },
+    "Platelet Count": {
+        "LOW": E("Your platelet count is low. This can affect blood clotting.",
+                 "Viral fevers such as dengue, some medicines, vitamin deficiency.", "", "Drink plenty of fluids.",
+                 "See a doctor immediately if you also have fever, bleeding from the nose or gums, or skin rashes."),
+        "HIGH": E("Your platelet count is high.", "Infection, inflammation, iron deficiency.", "", "", SEEDOC_EN),
+    },
+    "Neutrophils": {
+        "LOW": E("Your neutrophil count is low.", "Viral infection, some medicines.", "", "", "See a doctor if you have fever."),
+        "HIGH": E("Your neutrophil count is high. This most often points to a bacterial infection.",
+                  "Bacterial infection, stress, smoking.", "", "", "See a doctor if you have fever or pain."),
+    },
+    "Lymphocytes": {
+        "LOW": E("Your lymphocyte count is low.", "Infection, stress, some medicines.", "", "", "Please ask your doctor."),
+        "HIGH": E("Your lymphocyte count is high. This most often points to a viral infection.",
+                  "Viral infection.", "", "", "See a doctor if symptoms continue."),
+    },
+    "Monocytes": {
+        "LOW": E("Your monocyte count is low.", "Some medicines, steroid use, sometimes normal variation.", "", "", OTHER_EN),
+        "HIGH": E("Your monocyte count is high.", "Long-standing infection, inflammation, recovery after an infection.", "", "",
+                  "See a doctor if you have symptoms such as fever or weight loss."),
+    },
+    "Eosinophils": {
+        "LOW": E("Your eosinophil count is low.", "Steroid medicines, stress. Usually not significant.", "", "", OTHER_EN),
+        "HIGH": E("Your eosinophil count is high.", "Allergies, asthma, skin allergies, intestinal worms.",
+                  "History of allergy, dust, certain foods or medicines.", "Avoid things you are allergic to.",
+                  "See a doctor if you have cough, wheezing or skin itching."),
+    },
+    "Basophils": {
+        "LOW": E("Your basophil count is low. This is usually not significant.", "", "", "", OTHER_EN),
+        "HIGH": E("Your basophil count is high.", "Allergy, inflammation, rarely blood disorders.", "", "", SEEDOC_EN),
+    },
+    "Fasting Blood Sugar": {
+        "LOW": E("Your blood sugar is low.", "Going a long time without food, some medicines.", "",
+                 "If you feel sweaty, shaky or dizzy, have something sweet right away.", "See a doctor if this happens often."),
+        "HIGH": E("Your fasting blood sugar is high. This may point to pre-diabetes or diabetes. Also check that the test was done on an empty stomach.",
+                  "Eating before the test, stress, some medicines.", SUGRISK_EN, SUGDIET_EN,
+                  "Further tests such as HbA1c may be needed to confirm. Please see a doctor."),
+    },
+    "HbA1c": {
+        "LOW": E("Your average blood sugar over the last 2-3 months appears low.",
+                 "Anemia or recent blood loss can make the result look lower.", "", "", "Please ask your doctor."),
+        "HIGH": E("Your average blood sugar over the last 2-3 months is high. This may point to pre-diabetes or diabetes.",
+                  "Poorly controlled sugar, a lot of sweets and starch.", SUGRISK_EN, SUGDIET_EN,
+                  "Please see a doctor to confirm and discuss whether treatment is needed."),
+    },
+    "Total Cholesterol": {
+        "HIGH": E("Your total cholesterol is high. Over time this can raise the risk of heart disease.",
+                  "Fatty diet, lack of exercise, family tendency.", LIPRISK_EN, CHOL_EN,
+                  "Ask your doctor whether LDL, HDL and triglyceride tests are needed."),
+    },
+    "Triglycerides": {
+        "HIGH": E("Your triglycerides (blood fat) are high. This can raise the risk of heart disease.",
+                  "A lot of sweets, starch and fried food, alcohol, lack of exercise, diabetes.", LIPRISK_EN,
+                  "Cut down on sweets, soft drinks, bakery items, white rice and alcohol. Eat fish, nuts and vegetables and walk daily.",
+                  "See a doctor soon if the value is very high or you have stomach pain."),
+    },
+    "HDL Cholesterol": {
+        "LOW": E("Your HDL ('good') cholesterol is low. This can raise the risk of heart disease.",
+                 "Lack of exercise, smoking, obesity, diabetes.", LIPRISK_EN,
+                 "Exercise or walk daily and quit smoking. Include nuts, fish, fruits and vegetables.",
+                 "Discuss with your doctor along with your other cholesterol values."),
+    },
+    "LDL Cholesterol": {
+        "HIGH": E("Your LDL ('bad') cholesterol is high. Over time this can raise the risk of heart disease.",
+                  "Fatty diet, lack of exercise, family tendency.", LIPRISK_EN, CHOL_EN,
+                  "Ask your doctor whether treatment is needed based on your overall heart risk."),
+    },
+    "Creatinine": {
+        "LOW": E("Your creatinine is low. This is often due to low muscle mass or drinking a lot of water.",
+                 "Low muscle mass, pregnancy.", "", "", "Please ask your doctor."),
+        "HIGH": E("Your creatinine is high. It may mean your kidneys are not filtering blood fully.",
+                  "Dehydration, kidney damage, a very high-meat diet or heavy exercise, some medicines.",
+                  "Diabetes, high blood pressure, family history of kidney disease, frequent use of painkillers.",
+                  "Drink enough water. Do not take painkillers without a doctor's advice.",
+                  "See a doctor soon. Go immediately if you have leg swelling or very little urine."),
+    },
+    "Vitamin D": {
+        "LOW": E("Your vitamin D is low. It can cause bone pain, tiredness and muscle aches.",
+                 "Little sunlight, low dietary intake, age, excess body weight.",
+                 "Spending most of the time indoors, covered clothing, darker skin, not going out in the sun.",
+                 "Spend 15-20 minutes in gentle morning or evening sun daily. Egg yolk, fish, milk and mushrooms help. Only a doctor should decide a supplement dose.",
+                 "If bone pain continues, see a doctor for the right supplement dose."),
+        "HIGH": E("Your vitamin D is high. This usually happens from taking too many supplements.",
+                  "High-dose vitamin D tablets.", "", "", "If you take supplements, confirm the dose with your doctor."),
+    },
+    "SGPT (ALT)": {
+        "HIGH": E("Your liver enzyme (SGPT/ALT) is high. There may be inflammation or damage in the liver.",
+                  "Fatty liver, alcohol, hepatitis infection, some medicines.",
+                  "Obesity, diabetes, heavy alcohol use, fatty diet.", LIVDIET_EN, LIVDOC_EN),
+    },
+    "SGOT (AST)": {
+        "HIGH": E("Your enzyme (SGOT/AST) is high. It can point to liver or muscle injury.",
+                  "Fatty liver, alcohol, hepatitis infection, strenuous exercise, some medicines.",
+                  "Obesity, diabetes, heavy alcohol use.", LIVDIET_EN, LIVDOC_EN),
+    },
+    "TSH": {
+        "LOW": E("Your TSH is low. This may point to an overactive thyroid (hyperthyroidism).",
+                 "Overactive thyroid gland, some medicines.", "Women, family history of thyroid problems.", "",
+                 "Ask your doctor whether T3 and T4 tests are needed."),
+        "HIGH": E("Your TSH is high. This may point to an underactive thyroid (hypothyroidism).",
+                  "Underactive thyroid gland, iodine deficiency.", "Women, family history of thyroid problems, age above 40.",
+                  "Use iodized salt. Eat a balanced diet and exercise regularly.",
+                  "See a doctor if you have weight gain, tiredness or feel unusually cold."),
+    },
+}
+DEFAULT_EN = E("This value is outside the normal range.", "", "", "", "Please ask your doctor about this.")
+INFO_BY_LANG = {"ta": INFO, "en": INFO_EN}
+DEFAULT_BY_LANG = {"ta": DEFAULT, "en": DEFAULT_EN}
+LANGS = {"ta": "தமிழ்", "en": "English"}
+
+UI = {
+    "ta": {
+        "title": "🩺 ஆய்வக அறிக்கை விளக்கி",
+        "sub": "உங்கள் இரத்தப் பரிசோதனை அறிக்கையைப் (PDF அல்லது புகைப்படம்) பதிவேற்றுங்கள். ஒவ்வொரு மதிப்பும் இயல்பு வரம்புடன் ஒப்பிடப்பட்டு, எளிய தமிழில் விளக்கப்படும்.",
+        "disclaimer": "இது மருத்துவ ஆலோசனை அல்ல. நோயைக் கண்டறிவதோ சிகிச்சை அளிப்பதோ இந்த செயலியின் வேலை அல்ல. சந்தேகம் இருந்தால் மருத்துவரை அணுகவும். நெஞ்சு வலி, மூச்சுத்திணறல், மயக்கம் போன்ற அவசர நிலையில் உடனே மருத்துவ உதவி பெறவும்.",
+        "scope": "இந்த செயலி ஆய்வகத்தில் (lab) இருந்து பெற்ற இரத்தப் பரிசோதனை அறிக்கைகளுக்கு மட்டும். மதிப்புகளுக்கு அருகில் இயல்பு வரம்பு (reference range) அச்சிடப்பட்டிருக்க வேண்டும். மருத்துவமனை டிஸ்சார்ஜ் சம்மரி, மருந்துச் சீட்டு போன்றவற்றைப் படிக்காது. உங்கள் அறிக்கையில் பெயர், தொலைபேசி எண் இருந்தால் அவற்றை நீக்கிவிட்டுப் பதிவேற்றுவது நல்லது. புகைப்படம் எடுத்தால் நல்ல வெளிச்சத்தில், நேராக, தெளிவாக எடுக்கவும்.",
+        "uploader": "அறிக்கையைப் பதிவேற்றுங்கள் (PDF அல்லது புகைப்படம்)",
+        "spinner": "அறிக்கையைப் படிக்கிறோம்...",
+        "read_error": "கோப்பைப் படிக்க முடியவில்லை. தெளிவான PDF அல்லது புகைப்படத்தை முயற்சிக்கவும்.",
+        "tech_err": "தொழில்நுட்பப் பிழை: {e}",
+        "ocr_warn": "புகைப்படத்திலிருந்து எழுத்துகள் படிக்கப்பட்டுள்ளன, அதனால் சில எண்கள் தவறாக இருக்கலாம். சில பரிசோதனைகள் படிக்கப்படாமலும் போகலாம். கீழே உள்ள மதிப்புகளை உங்கள் அசல் அறிக்கையுடன் சரிபார்க்கவும்.",
+        "discharge": "இது மருத்துவமனை டிஸ்சார்ஜ் சம்மரி போலத் தெரிகிறது. இந்த செயலி ஆய்வக இரத்தப் பரிசோதனை அறிக்கைகளை மட்டுமே விளக்கும். இந்த ஆவணத்தில் மதிப்புகளுக்கு இயல்பு வரம்பு இல்லாததால் அவற்றை நாங்கள் ஊகித்துச் சொல்ல மாட்டோம். ஆய்வகத்தில் இருந்து பெற்ற பரிசோதனை அறிக்கையைப் பதிவேற்றவும். இந்த ஆவணத்தை உங்கள் மருத்துவரிடம் கேட்டுப் புரிந்துகொள்ளவும்.",
+        "empty": "இந்த அறிக்கையில் பரிசோதனை மதிப்புகளைப் படிக்க முடியவில்லை. தெளிவான புகைப்படம் அல்லது டிஜிட்டல் PDF-ஐ முயற்சிக்கவும்.",
+        "unknown": "இந்த அறிக்கையில் உள்ள இந்தப் பரிசோதனைகளை இந்த செயலியால் விளக்க முடியவில்லை: {names}. இவற்றுக்கு அசல் அறிக்கையைப் பார்த்து மருத்துவரிடம் கேளுங்கள்.",
+        "doubtful": "இந்த மதிப்புகளைச் சரியாகப் படிக்க முடியவில்லை, அதனால் அவற்றை விட்டுவிட்டோம்: {names}. அசல் அறிக்கையைப் பார்க்கவும்.",
+        "c_total": "மொத்தம்", "c_ok": "இயல்பு", "c_low": "குறைவு", "c_high": "அதிகம்",
+        "th_test": "பரிசோதனை", "th_value": "உங்கள் மதிப்பு", "th_range": "இயல்பு வரம்பு", "th_status": "நிலை",
+        "b_low": "↓ குறைவு", "b_high": "↑ அதிகம்", "b_ok": "✓ இயல்பு",
+        "legend": "பச்சைப் பகுதி = இயல்பு வரம்பு. புள்ளி = உங்கள் மதிப்பு.",
+        "caption": "அறிக்கையில் வயது வாரியான வரம்புகள் இருந்தால் 18 வயதுக்கு மேற்பட்டவர்களுக்கான வரம்பு எடுக்கப்படும். மதிப்பும் வரம்பும் வெவ்வேறு அலகுகளில் (ஆயிரம் / லட்சம்) இருந்தால் ஒரே அலகாக மாற்றிக் காட்டப்படும்.",
+        "ex_title": "விளக்கங்கள்",
+        "ex_caption": "இயல்பாக இல்லாத மதிப்புகளுக்கு மட்டும். தட்டினால் விரியும்.",
+        "s_meaning": "பொருள்", "s_reasons": "சாத்தியமான காரணங்கள்", "s_risk": "ஆபத்துக் காரணிகள்",
+        "s_diet": "உணவு / வாழ்க்கை முறை", "s_doctor": "மருத்துவரை எப்போது அணுகவும்",
+        "tips": "பொதுவான குறிப்புகள்: தினமும் 30 நிமிடம் நடைப்பயிற்சி, போதுமான தண்ணீர், 7-8 மணி நேர உறக்கம், சரிவிகித உணவு. இயல்பாக இல்லாத மதிப்புகளுடன் உங்கள் மருத்துவரைச் சந்திக்கவும்.",
+        "all_ok": "படிக்கப்பட்ட எல்லா மதிப்புகளும் இயல்பு வரம்புக்குள் உள்ளன. இருந்தாலும் அறிகுறிகள் இருந்தால் மருத்துவரைச் சந்திக்கவும்.",
+        "text_exp": "படிக்கப்பட்ட உரை (சரிபார்க்க)",
+        "not_stored": "உங்கள் அறிக்கை எங்கும் சேமிக்கப்படாது.",
+    },
+    "en": {
+        "title": "🩺 Lab Report Explainer",
+        "sub": "Upload your blood test report (PDF or photo). Every value is compared with the report's own reference range and explained in simple English.",
+        "disclaimer": "This is not medical advice. This app does not diagnose or treat any condition. If in doubt, please see a doctor. In an emergency such as chest pain, breathlessness or fainting, get medical help immediately.",
+        "scope": "This app is only for blood test reports issued by a lab, where the reference range is printed next to each value. It does not read hospital discharge summaries or prescriptions. If your report has your name or phone number, it is best to remove them before uploading. If you take a photo, use good light and keep the report straight and clear.",
+        "uploader": "Upload your report (PDF or photo)",
+        "spinner": "Reading your report...",
+        "read_error": "Could not read the file. Please try a clear PDF or photo.",
+        "tech_err": "Technical error: {e}",
+        "ocr_warn": "Text was read from a photo, so some numbers may be wrong, and some tests may be missed. Please check the values below against your original report.",
+        "discharge": "This looks like a hospital discharge summary. This app only explains lab blood test reports. This document has no reference ranges for its values, so we will not guess. Please upload a lab test report, and ask your doctor to explain this document.",
+        "empty": "Could not read any test values from this report. Please try a clear photo or a digital PDF.",
+        "unknown": "This app could not explain these tests in your report: {names}. Please check the original report and ask your doctor.",
+        "doubtful": "These values could not be read reliably, so we left them out: {names}. Please check the original report.",
+        "c_total": "Total", "c_ok": "Normal", "c_low": "Low", "c_high": "High",
+        "th_test": "Test", "th_value": "Your value", "th_range": "Normal range", "th_status": "Status",
+        "b_low": "↓ Low", "b_high": "↑ High", "b_ok": "✓ Normal",
+        "legend": "Green area = normal range. Dot = your value.",
+        "caption": "If the report has age-wise ranges, the range for people above 18 is used. If the value and range are printed in different units (thousands / lakhs), they are converted to one unit.",
+        "ex_title": "Explanations",
+        "ex_caption": "Only for values outside the normal range. Tap to expand.",
+        "s_meaning": "Meaning", "s_reasons": "Possible reasons", "s_risk": "Risk factors",
+        "s_diet": "Diet / lifestyle", "s_doctor": "When to see a doctor",
+        "tips": "General tips: walk 30 minutes daily, drink enough water, sleep 7-8 hours and eat a balanced diet. Please discuss any abnormal values with your doctor.",
+        "all_ok": "All the values we could read are within the normal range. Still, see a doctor if you have symptoms.",
+        "text_exp": "Text read from the report (to verify)",
+        "not_stored": "Your report is not saved anywhere.",
+    },
+}
 
 CSS = """<style>
 .lr-hero{background:linear-gradient(135deg,#0f766e,#0e7490 55%,#1d4ed8);color:#fff;border-radius:16px;padding:20px 18px;margin:0 0 14px 0}
@@ -517,11 +772,10 @@ table.lr tr.high td{background:rgba(239,68,68,.11)}
 .lr-legend{font-size:.76rem;opacity:.75;margin:2px 0 8px 0}
 </style>"""
 
-HERO = (
-    '<div class="lr-hero"><div class="lr-title">🩺 ஆய்வக அறிக்கை விளக்கி</div>'
-    '<div class="lr-sub">உங்கள் இரத்தப் பரிசோதனை அறிக்கையைப் (PDF அல்லது புகைப்படம்) பதிவேற்றுங்கள். '
-    'ஒவ்வொரு மதிப்பும் இயல்பு வரம்புடன் ஒப்பிடப்பட்டு, எளிய தமிழில் விளக்கப்படும்.</div></div>'
-)
+
+def hero_html(L):
+    return (f'<div class="lr-hero"><div class="lr-title">{html.escape(L["title"])}</div>'
+            f'<div class="lr-sub">{html.escape(L["sub"])}</div></div>')
 
 
 def fmt(x):
@@ -547,22 +801,24 @@ def bar_html(r, cls):
             f'<div class="mk {cls}" style="left:{pos(v):.1f}%"></div></div>')
 
 
-def summary_html(df):
+def summary_html(df, L):
     n = len(df)
     low = int((df.Status == "LOW").sum())
     high = int((df.Status == "HIGH").sum())
     ok = n - low - high
-    cards = [("", n, "மொத்தம்"), ("ok", ok, "இயல்பு"), ("low", low, "குறைவு"), ("high", high, "அதிகம்")]
+    cards = [("", n, L["c_total"]), ("ok", ok, L["c_ok"]), ("low", low, L["c_low"]), ("high", high, L["c_high"])]
     return '<div class="lr-cards">' + "".join(
-        f'<div class="lr-card {c}"><b>{v}</b><span>{t}</span></div>' for c, v, t in cards) + "</div>"
+        f'<div class="lr-card {c}"><b>{v}</b><span>{html.escape(t)}</span></div>' for c, v, t in cards) + "</div>"
 
 
-def table_html(df):
+def table_html(df, L, lang):
+    badge = {"LOW": (L["b_low"], "low"), "HIGH": (L["b_high"], "high"), "NORMAL": (L["b_ok"], "ok")}
     rows = []
     for r in df.itertuples():
-        label, cls = BADGE[r.Status]
-        ta = html.escape(TA_NAME.get(r.Test, r.Test))
-        en = html.escape(r.Test)
+        label, cls = badge[r.Status]
+        name = NAMES[lang].get(r.Test, r.Test)
+        ta = html.escape(name)
+        en = html.escape(r.Test) if name != r.Test else ""
         unit = html.escape(str(r.Unit))
         row_cls = "" if cls == "ok" else cls
         if r.High >= 1000000:
@@ -574,71 +830,82 @@ def table_html(df):
         rows.append(
             f'<tr class="main {row_cls}"><td><b>{ta}</b><br><span class="en">{en}</span></td>'
             f'<td><b>{fmt(r.Value)}</b><br><span class="un">{unit}</span></td>'
-            f'<td>{rng}</td><td><span class="bd {cls}">{label}</span></td></tr>'
+            f'<td>{rng}</td><td><span class="bd {cls}">{html.escape(label)}</span></td></tr>'
             f'<tr class="barrow {row_cls}"><td colspan="4">{bar_html(r, cls)}</td></tr>')
-    head = "<tr><th>பரிசோதனை</th><th>உங்கள் மதிப்பு</th><th>இயல்பு வரம்பு</th><th>நிலை</th></tr>"
+    head = (f'<tr><th>{html.escape(L["th_test"])}</th><th>{html.escape(L["th_value"])}</th>'
+            f'<th>{html.escape(L["th_range"])}</th><th>{html.escape(L["th_status"])}</th></tr>')
     return f'<div class="lr-wrap"><table class="lr"><thead>{head}</thead><tbody>{"".join(rows)}</tbody></table></div>'
 
 
-def explain_box(r):
-    info = INFO.get(r.Test, {}).get(r.Status, DEFAULT)
-    st.markdown(f"**பொருள்:** {info['meaning']}")
+def explain_box(r, L, lang):
+    info = INFO_BY_LANG[lang].get(r.Test, {}).get(r.Status, DEFAULT_BY_LANG[lang])
+    st.markdown(f"**{L['s_meaning']}:** {info['meaning']}")
     if info["reasons"]:
-        st.markdown(f"**சாத்தியமான காரணங்கள்:** {info['reasons']}")
+        st.markdown(f"**{L['s_reasons']}:** {info['reasons']}")
     if info["risk"]:
-        st.markdown(f"**ஆபத்துக் காரணிகள்:** {info['risk']}")
+        st.markdown(f"**{L['s_risk']}:** {info['risk']}")
     if info["diet"]:
-        st.markdown(f"**உணவு / வாழ்க்கை முறை:** {info['diet']}")
+        st.markdown(f"**{L['s_diet']}:** {info['diet']}")
     if info["doctor"]:
-        st.markdown(f"**மருத்துவரை எப்போது அணுகவும்:** {info['doctor']}")
+        st.markdown(f"**{L['s_doctor']}:** {info['doctor']}")
 
 
-st.markdown(CSS + HERO, unsafe_allow_html=True)
-st.warning("இது மருத்துவ ஆலோசனை அல்ல. நோயைக் கண்டறிவதோ சிகிச்சை அளிப்பதோ இந்த செயலியின் வேலை அல்ல. சந்தேகம் இருந்தால் மருத்துவரை அணுகவும். நெஞ்சு வலி, மூச்சுத்திணறல், மயக்கம் போன்ற அவசர நிலையில் உடனே மருத்துவ உதவி பெறவும்.")
-st.info("இந்த செயலி ஆய்வகத்தில் (lab) இருந்து பெற்ற இரத்தப் பரிசோதனை அறிக்கைகளுக்கு மட்டும். மதிப்புகளுக்கு அருகில் இயல்பு வரம்பு (reference range) அச்சிடப்பட்டிருக்க வேண்டும். மருத்துவமனை டிஸ்சார்ஜ் சம்மரி, மருந்துச் சீட்டு போன்றவற்றைப் படிக்காது. உங்கள் அறிக்கையில் பெயர், தொலைபேசி எண் இருந்தால் அவற்றை நீக்கிவிட்டுப் பதிவேற்றுவது நல்லது. புகைப்படம் எடுத்தால் நல்ல வெளிச்சத்தில், நேராக, தெளிவாக எடுக்கவும்.")
+lang_name = st.radio("Language / மொழி", list(LANGS.values()), horizontal=True, key="lang_choice")
+lang = [k for k, v in LANGS.items() if v == lang_name][0]
+L = UI[lang]
 
-uploaded = st.file_uploader("அறிக்கையைப் பதிவேற்றுங்கள் (PDF அல்லது புகைப்படம்)", type=["pdf", "png", "jpg", "jpeg"])
+st.markdown(CSS + hero_html(L), unsafe_allow_html=True)
+st.warning(L["disclaimer"])
+st.info(L["scope"])
 
-if uploaded:
-    try:
-        with st.spinner("அறிக்கையைப் படிக்கிறோம்..."):
-            text, source = read_text(uploaded)
-            df, doubtful, unknown = analyze_text(text)
-    except Exception as e:
-        st.error("கோப்பைப் படிக்க முடியவில்லை. தெளிவான PDF அல்லது புகைப்படத்தை முயற்சிக்கவும்.")
-        st.caption(f"தொழில்நுட்பப் பிழை: {e}")
-        st.stop()
+uploaded = st.file_uploader(L["uploader"], type=["pdf", "png", "jpg", "jpeg"], key="report_file")
+
+if not uploaded:
+    st.session_state.pop("report", None)
+    st.session_state.pop("report_key", None)
+else:
+    key = (uploaded.name, uploaded.size, getattr(uploaded, "file_id", None))
+    if st.session_state.get("report_key") != key:
+        try:
+            with st.spinner(L["spinner"]):
+                text, source = read_text(uploaded)
+                df, doubtful, unknown = analyze_text(text)
+        except Exception as e:
+            st.error(L["read_error"])
+            st.caption(L["tech_err"].format(e=e))
+            st.stop()
+        st.session_state["report"] = (text, source, df, doubtful, unknown)
+        st.session_state["report_key"] = key
+    text, source, df, doubtful, unknown = st.session_state["report"]
 
     if source == "ocr":
-        st.warning("புகைப்படத்திலிருந்து எழுத்துகள் படிக்கப்பட்டுள்ளன, அதனால் சில எண்கள் தவறாக இருக்கலாம். சில பரிசோதனைகள் படிக்கப்படாமலும் போகலாம். கீழே உள்ள மதிப்புகளை உங்கள் அசல் அறிக்கையுடன் சரிபார்க்கவும்.")
+        st.warning(L["ocr_warn"])
 
     if df.empty:
-        if looks_like_discharge(text):
-            st.error("இது மருத்துவமனை டிஸ்சார்ஜ் சம்மரி போலத் தெரிகிறது. இந்த செயலி ஆய்வக இரத்தப் பரிசோதனை அறிக்கைகளை மட்டுமே விளக்கும். இந்த ஆவணத்தில் மதிப்புகளுக்கு இயல்பு வரம்பு இல்லாததால் அவற்றை நாங்கள் ஊகித்துச் சொல்ல மாட்டோம். ஆய்வகத்தில் இருந்து பெற்ற பரிசோதனை அறிக்கையைப் பதிவேற்றவும். இந்த ஆவணத்தை உங்கள் மருத்துவரிடம் கேட்டுப் புரிந்துகொள்ளவும்.")
-        else:
-            st.error("இந்த அறிக்கையில் பரிசோதனை மதிப்புகளைப் படிக்க முடியவில்லை. தெளிவான புகைப்படம் அல்லது டிஜிட்டல் PDF-ஐ முயற்சிக்கவும்.")
+        st.error(L["discharge"] if looks_like_discharge(text) else L["empty"])
     else:
+        nm = NAMES[lang]
         if unknown:
-            st.warning("இந்த அறிக்கையில் உள்ள இந்தப் பரிசோதனைகளை இந்த செயலியால் விளக்க முடியவில்லை: " + ", ".join(unknown) + ". இவற்றுக்கு அசல் அறிக்கையைப் பார்த்து மருத்துவரிடம் கேளுங்கள்.")
+            st.warning(L["unknown"].format(names=", ".join(unknown)))
         if doubtful:
-            st.warning("இந்த மதிப்புகளைச் சரியாகப் படிக்க முடியவில்லை, அதனால் அவற்றை விட்டுவிட்டோம்: " + ", ".join(doubtful) + ". அசல் அறிக்கையைப் பார்க்கவும்.")
+            st.warning(L["doubtful"].format(names=", ".join(nm.get(d, d) for d in doubtful)))
 
-        st.markdown(summary_html(df) + table_html(df), unsafe_allow_html=True)
-        st.markdown('<div class="lr-legend">பச்சைப் பகுதி = இயல்பு வரம்பு. புள்ளி = உங்கள் மதிப்பு.</div>', unsafe_allow_html=True)
-        st.caption("அறிக்கையில் வயது வாரியான வரம்புகள் இருந்தால் 18 வயதுக்கு மேற்பட்டவர்களுக்கான வரம்பு எடுக்கப்படும். மதிப்பும் வரம்பும் வெவ்வேறு அலகுகளில் (ஆயிரம் / லட்சம்) இருந்தால் ஒரே அலகாக மாற்றிக் காட்டப்படும்.")
+        st.markdown(summary_html(df, L) + table_html(df, L, lang), unsafe_allow_html=True)
+        st.markdown(f'<div class="lr-legend">{html.escape(L["legend"])}</div>', unsafe_allow_html=True)
+        st.caption(L["caption"])
 
         abn = df[df.Status != "NORMAL"]
         if len(abn):
-            st.subheader("விளக்கங்கள்")
-            st.caption("இயல்பாக இல்லாத மதிப்புகளுக்கு மட்டும். தட்டினால் விரியும்.")
+            st.subheader(L["ex_title"])
+            st.caption(L["ex_caption"])
             for r in abn.itertuples():
                 arrow = "↓" if r.Status == "LOW" else "↑"
-                with st.expander(f"{arrow} {TA_NAME.get(r.Test, r.Test)} · {fmt(r.Value)} {r.Unit}"):
-                    explain_box(r)
-            st.info("பொதுவான குறிப்புகள்: தினமும் 30 நிமிடம் நடைப்பயிற்சி, போதுமான தண்ணீர், 7-8 மணி நேர உறக்கம், சரிவிகித உணவு. இயல்பாக இல்லாத மதிப்புகளுடன் உங்கள் மருத்துவரைச் சந்திக்கவும்.")
+                with st.expander(f"{arrow} {nm.get(r.Test, r.Test)} · {fmt(r.Value)} {r.Unit}"):
+                    explain_box(r, L, lang)
+            st.info(L["tips"])
         else:
-            st.success("படிக்கப்பட்ட எல்லா மதிப்புகளும் இயல்பு வரம்புக்குள் உள்ளன. இருந்தாலும் அறிகுறிகள் இருந்தால் மருத்துவரைச் சந்திக்கவும்.")
+            st.success(L["all_ok"])
 
-    with st.expander("படிக்கப்பட்ட உரை (சரிபார்க்க)"):
+    with st.expander(L["text_exp"]):
         st.text(text)
-    st.caption("உங்கள் அறிக்கை எங்கும் சேமிக்கப்படாது.")
+    st.caption(L["not_stored"])
