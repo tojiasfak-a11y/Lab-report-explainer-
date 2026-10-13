@@ -745,6 +745,9 @@ UI = {
     },
 }
 
+UI["ta"]["anim"] = "✨ அனிமேஷன்"
+UI["en"]["anim"] = "✨ Animation"
+
 CSS = """<style>
 .lr-hero{background:linear-gradient(135deg,#0f766e,#0e7490 55%,#1d4ed8);color:#fff;border-radius:16px;padding:20px 18px;margin:0 0 14px 0}
 .lr-title{font-size:1.55rem;font-weight:800;line-height:1.35;margin:0 0 6px 0}
@@ -772,6 +775,23 @@ table.lr tr.high td{background:rgba(239,68,68,.11)}
 .lr-legend{font-size:.76rem;opacity:.75;margin:2px 0 8px 0}
 </style>"""
 
+
+ANIM = """<style>
+.stApp{background-image:linear-gradient(125deg,rgba(15,118,110,.20),rgba(29,78,216,.14) 25%,rgba(16,185,129,.18) 50%,rgba(14,116,144,.16) 75%,rgba(15,118,110,.20));background-size:300% 300%;animation:lrbg 32s ease-in-out infinite}
+@keyframes lrbg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes lrfade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes lrfade2{from{opacity:0}to{opacity:1}}
+@keyframes lrgrow{from{width:0}}
+@keyframes lrmove{from{left:0}}
+.lr-hero{animation:lrfade .7s ease both}
+.lr-card{animation:lrfade .6s ease both}
+.lr-card:nth-child(2){animation-delay:.08s}.lr-card:nth-child(3){animation-delay:.16s}.lr-card:nth-child(4){animation-delay:.24s}
+.lr-wrap{animation:lrfade .6s ease .2s both}
+table.lr tr.main,table.lr tr.barrow{animation:lrfade2 .5s ease both}
+.zone{animation:lrgrow 1s ease-out .3s both}
+.mk{animation:lrmove 1.1s cubic-bezier(.2,.8,.2,1) .3s both}
+@media (prefers-reduced-motion:reduce){.stApp,.lr-hero,.lr-card,.lr-wrap,table.lr tr.main,table.lr tr.barrow,.zone,.mk{animation:none!important}}
+</style>"""
 
 def hero_html(L):
     return (f'<div class="lr-hero"><div class="lr-title">{html.escape(L["title"])}</div>'
@@ -814,8 +834,9 @@ def summary_html(df, L):
 def table_html(df, L, lang):
     badge = {"LOW": (L["b_low"], "low"), "HIGH": (L["b_high"], "high"), "NORMAL": (L["b_ok"], "ok")}
     rows = []
-    for r in df.itertuples():
+    for i, r in enumerate(df.itertuples()):
         label, cls = badge[r.Status]
+        dl = f'style="animation-delay:{0.25 + i * 0.07:.2f}s"'
         name = NAMES[lang].get(r.Test, r.Test)
         ta = html.escape(name)
         en = html.escape(r.Test) if name != r.Test else ""
@@ -828,10 +849,10 @@ def table_html(df, L, lang):
         else:
             rng = f"{fmt(r.Low)} – {fmt(r.High)}"
         rows.append(
-            f'<tr class="main {row_cls}"><td><b>{ta}</b><br><span class="en">{en}</span></td>'
+            f'<tr class="main {row_cls}" {dl}><td><b>{ta}</b><br><span class="en">{en}</span></td>'
             f'<td><b>{fmt(r.Value)}</b><br><span class="un">{unit}</span></td>'
             f'<td>{rng}</td><td><span class="bd {cls}">{html.escape(label)}</span></td></tr>'
-            f'<tr class="barrow {row_cls}"><td colspan="4">{bar_html(r, cls)}</td></tr>')
+            f'<tr class="barrow {row_cls}" {dl}><td colspan="4">{bar_html(r, cls)}</td></tr>')
     head = (f'<tr><th>{html.escape(L["th_test"])}</th><th>{html.escape(L["th_value"])}</th>'
             f'<th>{html.escape(L["th_range"])}</th><th>{html.escape(L["th_status"])}</th></tr>')
     return f'<div class="lr-wrap"><table class="lr"><thead>{head}</thead><tbody>{"".join(rows)}</tbody></table></div>'
@@ -853,8 +874,9 @@ def explain_box(r, L, lang):
 lang_name = st.radio("Language / மொழி", list(LANGS.values()), horizontal=True, key="lang_choice")
 lang = [k for k, v in LANGS.items() if v == lang_name][0]
 L = UI[lang]
+anim_on = st.toggle(L["anim"], value=True, key="anim_on")
 
-st.markdown(CSS + hero_html(L), unsafe_allow_html=True)
+st.markdown(CSS + (ANIM if anim_on else "") + hero_html(L), unsafe_allow_html=True)
 st.warning(L["disclaimer"])
 st.info(L["scope"])
 
