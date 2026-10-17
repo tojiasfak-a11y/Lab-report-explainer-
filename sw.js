@@ -1,7 +1,7 @@
 /* Service worker: lets the site open instantly and work offline after the first visit.
    - Same-site files: network first (so updates arrive), cache as the offline fallback.
    - Reading tools (pdf.js / Tesseract) from the CDN: cached after first use so scans work faster later. */
-const SHELL = 'thelivu-shell-v1';
+const SHELL = 'thelivu-shell-v2';
 const TOOLS = 'thelivu-tools-v1';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './favicon-96.png'];
 
@@ -18,7 +18,7 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin === location.origin) {
-    e.respondWith(fetch(req).then(res => {
+    e.respondWith(fetch(req, { cache: 'no-cache' }).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(SHELL).then(c => c.put(req, copy)); }
       return res;
     }).catch(() => caches.match(req).then(hit => hit || caches.match('./index.html'))));

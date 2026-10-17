@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>Lab Report Explainer · Thelivu | Blood test report in Tamil</title>
+<meta name="description" content="Upload your blood test report (PDF or photo) and understand every value in simple Tamil or English. Free, private, runs in your browser. இரத்தப் பரிசோதனை அறிக்கை இப்போது தமிழில்.">
+<link rel="canonical" href="https://tojiasfak-a11y.github.io/Lab-report-explainer-/">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Thelivu">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lab Report Explainer">
+<meta property="og:title" content="Lab Report Explainer · Thelivu">
+<meta property="og:description" content="Understand your blood test report in simple Tamil or English. Free and private.">
+<meta property="og:url" content="https://tojiasfak-a11y.github.io/Lab-report-explainer-/">
+<meta property="og:image" content="https://tojiasfak-a11y.github.io/Lab-report-explainer-/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Lab Report Explainer","alternateName":"Thelivu","url":"https://tojiasfak-a11y.github.io/Lab-report-explainer-/","applicationCategory":"HealthApplication","operatingSystem":"Any","inLanguage":["ta","en"],"image":"https://tojiasfak-a11y.github.io/Lab-report-explainer-/icon-512.png","description":"Upload a blood test report (PDF or photo) and get each value explained in simple Tamil or English.","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}</script>
+<style>
+:root{
+  --bg:#f3f8f8;--card:#ffffff;--fg:#1f2937;--muted:#64748b;--line:rgba(100,116,139,.28);
+  --ok:#16a34a;--low:#d97706;--high:#dc2626;
+  --warnbg:#fff4cc;--warnfg:#5b4a00;--infobg:#e3f0ff;--infofg:#16407a;--errbg:#fde4e4;--errfg:#7a1b1b;
+  --shadow:0 8px 28px rgba(15,23,42,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0b1117;--card:#151c24;--fg:#e8edf2;--muted:#9aa7b4;--line:rgba(148,163,184,.26);
+    --warnbg:#3b3410;--warnfg:#f3e6a3;--infobg:#12263f;--infofg:#a9cdf5;--errbg:#3d1717;--errfg:#f3b4b4;--shadow:0 8px 28px rgba(0,0,0,.45)}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Tamil","Noto Sans",Roboto,Arial,sans-serif;line-height:1.5;min-height:100vh}
+button{font:inherit;color:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:14px 14px calc(30px + env(safe-area-inset-bottom))}
+
+/* ---------- animated background ---------- */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bg i{position:absolute;width:90vmax;height:90vmax;border-radius:50%;will-change:transform}
+.bg .b1{left:-35vmax;top:-35vmax;background:radial-gradient(circle,rgba(15,118,110,.30),transparent 62%);animation:d1 38s ease-in-out infinite alternate}
+.bg .b2{right:-40vmax;top:8vh;background:radial-gradient(circle,rgba(29,78,216,.22),transparent 62%);animation:d2 46s ease-in-out infinite alternate}
+.bg .b3{left:-25vmax;bottom:-45vmax;background:radial-gradient(circle,rgba(16,185,129,.24),transparent 62%);animation:d3 52s ease-in-out infinite alternate}
+@keyframes d1{to{transform:translate3d(22vmax,14vmax,0) scale(1.12)}}
+@keyframes d2{to{transform:translate3d(-20vmax,18vmax,0) scale(.92)}}
+@keyframes d3{to{transform:translate3d(26vmax,-12vmax,0) scale(1.1)}}
+
+/* ---------- brand bar, logo, floating health icons ---------- */
+.brandbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 10px}
+.brand{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:1.08rem}
+.brand img{width:34px;height:34px;border-radius:50%;box-shadow:0 2px 10px rgba(11,99,201,.35)}
+.ibtn{border:0;background:linear-gradient(135deg,#0f766e,#1d4ed8);color:#fff;border-radius:999px;padding:8px 15px;font-weight:700;font-size:.85rem;cursor:pointer;box-shadow:0 4px 14px rgba(15,118,110,.35)}
+.ibtn[hidden]{display:none}
+.floaters{position:absolute;inset:0}
+.fi{position:absolute;left:var(--x);top:0;opacity:calc(var(--o) * var(--fo,1));transform:translate3d(0,112vh,0);animation:fly var(--t) linear var(--dl) infinite;will-change:transform;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@keyframes fly{0%{transform:translate3d(0,112vh,0) rotate(0deg)}50%{transform:translate3d(var(--sw),50vh,0) rotate(calc(var(--r) / 2))}100%{transform:translate3d(0,-20vh,0) rotate(var(--r))}}
+.fi.c0{color:#0f766e}.fi.c1{color:#1d4ed8}.fi.c2{color:#dc2626}.fi.c3{color:#16a34a}.fi.c4{color:#7c3aed}
+@media (prefers-color-scheme:dark){.fi{--fo:1.25}}
+
+/* ---------- top bar ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 12px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow)}
+.seg button{border:0;background:transparent;padding:7px 15px;border-radius:999px;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--muted);transition:background .25s,color .25s}
+.seg button[aria-pressed="true"]{background:linear-gradient(135deg,#0f766e,#1d4ed8);color:#fff}
+.sw{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.85rem;font-weight:600;box-shadow:var(--shadow)}
+.sw .knob{width:34px;height:20px;border-radius:99px;background:var(--line);position:relative;transition:background .25s}
+.sw .knob::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .25s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw[aria-checked="true"] .knob{background:var(--ok)}
+.sw[aria-checked="true"] .knob::after{transform:translateX(14px)}
+
+/* ---------- hero ---------- */
+.hero{display:flex;gap:16px;align-items:center;position:relative;overflow:hidden;border-radius:20px;padding:22px 20px;color:#fff;background:linear-gradient(135deg,#0f766e,#0e7490 55%,#1d4ed8);box-shadow:var(--shadow);animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.22) 50%,transparent 70%);transform:translateX(-120%);animation:shine 7s ease-in-out 1.2s infinite}
+@keyframes shine{0%,60%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+.hero h1{margin:0 0 4px;font-size:1.5rem;line-height:1.25;font-weight:800}
+.hero p{margin:0;opacity:.94;font-size:.9rem;line-height:1.45}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.hlogo{width:88px;height:88px;border-radius:50%;background:#fff;flex:none;box-shadow:0 8px 26px rgba(0,0,0,.28);animation:pop .9s cubic-bezier(.3,1.5,.5,1) .15s both;position:relative;z-index:1}
+.ht{position:relative;z-index:1;min-width:0}
+.taname{font-weight:700;font-size:1.05rem;margin:0 0 6px;opacity:.95}
+@keyframes pop{from{opacity:0;transform:scale(.4) rotate(-25deg)}to{opacity:1;transform:none}}
+@media (max-width:380px){.hlogo{width:66px;height:66px}.hero h1{font-size:1.35rem}}
+
+/* ---------- notes ---------- */
+.note{border-radius:14px;padding:12px 14px;margin:12px 0;font-size:.9rem;animation:rise .6s ease both}
+.note.warn{background:var(--warnbg);color:var(--warnfg)}
+.note.info{background:var(--infobg);color:var(--infofg)}
+.note.err{background:var(--errbg);color:var(--errfg)}
+.note.ok{background:rgba(22,163,74,.14);color:var(--ok)}
+
+/* ---------- upload ---------- */
+.drop{position:relative;border:2px dashed var(--line);border-radius:20px;background:var(--card);padding:24px 16px;text-align:center;margin:14px 0;box-shadow:var(--shadow);transition:border-color .25s,transform .25s,padding .3s;animation:rise .7s .1s ease both}
+.drop.over{border-color:var(--ok);transform:scale(1.015)}
+.drop .ico{font-size:2.4rem;display:block;animation:float 3.2s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.drop .btn{display:inline-block;margin-top:10px;background:linear-gradient(135deg,#0f766e,#1d4ed8);color:#fff;border:0;border-radius:999px;padding:12px 22px;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 6px 18px rgba(15,118,110,.35);position:relative;overflow:hidden}
+.drop .btn:active{transform:scale(.97)}
+.drop small{display:block;color:var(--muted);margin-top:10px;font-size:.8rem}
+.drop.compact{padding:12px}
+.drop.compact .ico,.drop.compact small.first{display:none}
+.drop input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+
+/* ---------- progress ---------- */
+.prog{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:14px 0;box-shadow:var(--shadow);animation:rise .4s ease both}
+.prog .lbl{font-weight:600;margin-bottom:10px}
+.pbar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;position:relative}
+.pbar b{display:block;height:100%;width:var(--p,8%);border-radius:99px;background:linear-gradient(90deg,#0f766e,#1d4ed8);transition:width .4s ease;position:relative;overflow:hidden}
+.pbar b::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:shimmer 1.3s linear infinite}
+@keyframes shimmer{to{transform:translateX(100%)}}
+.prog small{display:block;margin-top:10px;color:var(--muted);font-size:.8rem}
+
+/* ---------- summary ---------- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:14px 0;box-shadow:var(--shadow)}
+.sum{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.ring{position:relative;width:148px;height:148px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:13;stroke-linecap:round}
+.ring .track{stroke:var(--line)}
+.ring .seg{transition:stroke-dasharray 1.3s cubic-bezier(.2,.8,.2,1)}
+.ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .mid b{font-size:2rem;line-height:1}
+.ring .mid span{font-size:.7rem;color:var(--muted);max-width:82px;text-align:center;line-height:1.15}
+.leg{display:grid;gap:8px;min-width:150px}
+.leg div{display:flex;align-items:center;gap:10px;font-size:.95rem}
+.leg i{width:12px;height:12px;border-radius:50%}
+.leg b{font-size:1.15rem;min-width:1.6em}
+.leg .ok i{background:var(--ok)}.leg .low i{background:var(--low)}.leg .high i{background:var(--high)}
+
+/* ---------- filter ---------- */
+.chips{display:flex;gap:8px;margin:6px 0 10px}
+.chips button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--muted)}
+.chips button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+/* ---------- rows ---------- */
+.rows{display:grid;gap:10px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px;box-shadow:var(--shadow);position:relative;transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.row.low{border-left:5px solid var(--low)}.row.high{border-left:5px solid var(--high)}.row.ok{border-left:5px solid var(--ok)}
+.intro .row{opacity:0;transform:translateY(18px)}
+.intro .row.in{opacity:1;transform:none}
+.row[hidden]{display:none}
+.r1{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.nm{font-weight:700;font-size:1rem}
+.nm small{display:block;font-weight:500;color:var(--muted);font-size:.74rem}
+.val{text-align:right;white-space:nowrap}
+.val b{font-size:1.3rem}
+.val small{display:block;color:var(--muted);font-size:.74rem}
+.r2{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0 10px;font-size:.84rem;color:var(--muted)}
+.bd{display:inline-block;padding:3px 11px;border-radius:999px;font-size:.8rem;font-weight:800;white-space:nowrap}
+.bd.ok{background:rgba(22,163,74,.16);color:var(--ok)}.bd.low{background:rgba(217,119,6,.18);color:var(--low)}.bd.high{background:rgba(220,38,38,.16);color:var(--high)}
+.intro .row .bd{transform:scale(.5);opacity:0;transition:transform .5s cubic-bezier(.3,1.6,.5,1) .35s,opacity .3s .35s}
+.intro .row.in .bd{transform:none;opacity:1}
+.bar{position:relative;height:9px;border-radius:99px;background:var(--line)}
+.zone{position:absolute;top:0;bottom:0;border-radius:99px;background:rgba(22,163,74,.62);transition:width 1s ease-out .15s}
+.mk{position:absolute;top:50%;width:17px;height:17px;margin:-8.5px 0 0 -8.5px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 1px rgba(0,0,0,.35);transition:left 1.2s cubic-bezier(.2,.8,.2,1) .2s}
+.mk.ok{background:var(--ok)}.mk.low{background:var(--low)}.mk.high{background:var(--high)}
+.mk.pulse{animation:pulse 1.4s ease-out 1.3s 3}
+@keyframes pulse{0%{box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 0 0 rgba(220,38,38,.55)}100%{box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 0 14px rgba(220,38,38,0)}}
+.mk.low.pulse{animation-name:pulse2}
+@keyframes pulse2{0%{box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 0 0 rgba(217,119,6,.55)}100%{box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 0 14px rgba(217,119,6,0)}}
+
+/* ---------- details ---------- */
+.row.abn{cursor:pointer}
+.more{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:.84rem;font-weight:700;color:var(--muted)}
+.more .chev{display:inline-block;transition:transform .3s}
+.row.open .more .chev{transform:rotate(90deg)}
+.exbody{height:0;overflow:hidden;transition:height .4s cubic-bezier(.2,.8,.2,1)}
+.exin{padding-top:10px;font-size:.92rem}
+.exin p{margin:0 0 9px}
+.exin b{display:block;font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+
+.cap{font-size:.78rem;color:var(--muted);margin:10px 0;padding:8px 12px;border-radius:12px;background:var(--card);background:color-mix(in srgb,var(--card) 86%,transparent)}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:12px 0;font-size:.88rem}
+summary{cursor:pointer;font-weight:600}
+pre{white-space:pre-wrap;word-break:break-word;font-size:.78rem;max-height:260px;overflow:auto;margin:10px 0 0}
+.ver{text-align:center;color:var(--muted);font-size:.7rem;opacity:.7;margin-bottom:8px}
+footer{text-align:center;color:var(--muted);font-size:.78rem;margin:20px 0 6px}
+
+/* ---------- voice help ---------- */
+.bright{display:flex;align-items:center;gap:8px}
+.vbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:1.15rem;cursor:pointer;box-shadow:var(--shadow);padding:0}
+.vbtn[aria-pressed="true"]{background:linear-gradient(135deg,#0f766e,#1d4ed8);border-color:transparent}
+.vbtn[hidden]{display:none}
+.vbtn.speaking,.pill.speaking{animation:vpulse 1.1s ease-in-out infinite}
+@keyframes vpulse{50%{transform:scale(1.1)}}
+.vcard{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:var(--shadow);animation:rise .6s .1s ease both}
+.vcard[hidden]{display:none}
+.vico{font-size:1.9rem;line-height:1;animation:float 3.2s ease-in-out infinite}
+.vbody b{display:block;font-size:1.02rem}
+.vbody p{margin:4px 0 10px;font-size:.9rem;color:var(--muted)}
+.vbody p.vwarn{color:var(--warnfg);background:var(--warnbg);border-radius:10px;padding:8px 10px;margin-top:10px}
+.vrow{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font-weight:700;font-size:.88rem;cursor:pointer}
+.pill.primary{background:linear-gradient(135deg,#0f766e,#1d4ed8);color:#fff;border-color:transparent}
+.vbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin:10px 0;box-shadow:var(--shadow)}
+.vspeed{display:inline-flex;gap:4px;margin-left:auto;align-items:center;font-size:.78rem;color:var(--muted)}
+.vspeed button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 9px;font-size:.78rem;cursor:pointer;color:var(--muted)}
+.vspeed button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.readbtn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 13px;font-weight:700;font-size:.82rem;cursor:pointer;margin-bottom:10px}
+
+/* ---------- animation off ---------- */
+.noanim *,.noanim *::before,.noanim *::after{animation:none!important;transition:none!important}
+.noanim .intro .row,.noanim .intro .row .bd{opacity:1!important;transform:none!important}
+.noanim .bg{display:none}
+.noanim .hero::after{display:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-drop" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2.6C12 2.6 5.2 9.7 5.2 14.4a6.8 6.8 0 0 0 13.6 0C18.8 9.7 12 2.6 12 2.6z"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 20.6s-8-4.9-8-11A4.6 4.6 0 0 1 12 6.7a4.6 4.6 0 0 1 8 2.9c0 6.1-8 11-8 11z"/></symbol>
+<symbol id="i-cross" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M9.2 3h5.6v6.2H21v5.6h-6.2V21H9.2v-6.2H3V9.2h6.2z"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2.8l2.1 6.1 6.1 2.1-6.1 2.1L12 19.2l-2.1-6.1-6.1-2.1 6.1-2.1z"/></symbol>
+<symbol id="i-pill" viewBox="0 0 24 24"><g transform="rotate(-40 12 12)"><rect x="2.5" y="8" width="19" height="8" rx="4"/><path d="M12 8v8"/></g></symbol>
+<symbol id="i-steth" viewBox="0 0 24 24"><path d="M6 3.5v5a4 4 0 0 0 8 0v-5M5 3.5h2M13 3.5h2M10 12.5V15a4.5 4.5 0 0 0 9 0v-1.5"/><circle cx="19" cy="11.5" r="2"/></symbol>
+<symbol id="i-syringe" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="9" y="5" width="6" height="11" rx="1"/><path d="M12 2v3M10 2h4M12 16v5M9 10h2M9 13h2"/></g></symbol>
+<symbol id="i-thermo" viewBox="0 0 24 24"><path d="M10 14V5a2 2 0 0 1 4 0v9a4 4 0 1 1-4 0zM12 9v7"/></symbol>
+<symbol id="i-ecg" viewBox="0 0 24 24"><path d="M2 12.5h4.5l2-6 3.2 12 2.3-8.5 1.5 2.5H22"/></symbol>
+<symbol id="i-tube" viewBox="0 0 24 24"><path d="M9 3h6M10 3v14.2a2 2 0 0 0 4 0V3M10 9h4"/></symbol>
+<symbol id="i-dna" viewBox="0 0 24 24"><path d="M8 3c0 4.5 8 4.5 8 9s-8 4.5-8 9M16 3c0 4.5-8 4.5-8 9s8 4.5 8 9M9.2 7h5.6M9.2 17h5.6"/></symbol>
+<symbol id="i-bandage" viewBox="0 0 24 24"><g transform="rotate(-40 12 12)"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5"/><rect x="9" y="8.5" width="6" height="7"/></g></symbol>
+<symbol id="i-report" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+<symbol id="i-lens" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l6 6"/></symbol>
+</defs></svg>
+<div class="bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i><div class="floaters" id="floaters"></div></div>
+<main class="wrap">
+  <div class="brandbar">
+    <div class="brand"><img src="favicon-96.png" width="34" height="34" alt=""><span>Thelivu</span></div>
+    <div class="bright">
+      <button type="button" class="vbtn" id="voiceBtn" aria-pressed="false" aria-label="Voice help" hidden>🔊</button>
+      <button type="button" class="ibtn" id="installBtn" data-i="install" hidden>Install app</button>
+    </div>
+  </div>
+  <div class="top">
+    <div class="seg" role="group" aria-label="Language / மொழி">
+      <button type="button" data-lang="ta" aria-pressed="true">தமிழ்</button>
+      <button type="button" data-lang="en" aria-pressed="false">English</button>
+    </div>
+    <button type="button" class="sw" id="animSw" role="switch" aria-checked="true"><span class="knob"></span><span data-i="anim">✨ Animation</span></button>
+  </div>
+
+  <header class="hero"><img class="hlogo" src="icon-192.png" width="88" height="88" alt="Lab Report Explainer logo"><div class="ht"><h1>Lab Report Explainer</h1><div class="taname">ஆய்வக அறிக்கை விளக்கி</div><p data-i="sub">Upload your blood test report (PDF or photo). Every value is compared with the report's own reference range and explained in simple Tamil or English.</p></div></header>
+  <section class="vcard" id="vcard" hidden></section>
+  <div class="note warn" data-i="disclaimer"></div>
+  <div class="note info" data-i="scope"></div>
+
+  <section class="drop" id="drop">
+    <span class="ico" aria-hidden="true">📄</span>
+    <span class="btn" id="chooseBtn" data-i="choose"></span>
+    <small data-i="drop"></small>
+    <small class="first" data-i="first_note"></small>
+    <input type="file" id="file" accept="application/pdf,image/*" aria-label="Upload report">
+  </section>
+
+  <section class="prog" id="prog" hidden aria-live="polite">
+    <div class="lbl" id="progLbl"></div>
+    <div class="pbar"><b id="progBar"></b></div>
+  </section>
+
+  <section id="out" hidden></section>
+  <footer data-i="footer"></footer>
+  <div class="ver">Build: voice-1</div>
+</main>
+<noscript><p style="padding:20px;text-align:center">Please enable JavaScript to use Lab Report Explainer. இதைப் பயன்படுத்த JavaScript தேவை.</p></noscript>
+
+<script>
+(() => {
+'use strict';
+const D = {"aliases": [["Hemoglobin", "moglobin|\\bhb\\b"], ["RBC Count", "\\brbc\\b|red blood cell|red cell count|erythrocyte"], ["Hematocrit (PCV)", "h(?:a)?ematocrit|\\bpcv\\b|packed cell"], ["MCV", "\\bmcv\\b|mean corpuscular volume"], ["MCH", "\\bmch\\b"], ["MCHC", "\\bmchc\\b"], ["WBC Count", "\\bwbc\\b|white blood cell|total leu[ck]ocyte|\\btlc\\b"], ["Platelet Count", "platelet|\\bplt\\b"], ["Neutrophils", "neutrophil|polymorph"], ["Lymphocytes", "lymphocyte"], ["Monocytes", "monocyte"], ["Eosinophils", "eosinophil"], ["Basophils", "basophil"], ["Fasting Blood Sugar", "fasting\\s+(?:blood\\s+)?(?:sugar|glucose)|\\bfbs\\b|glucose\\W+fasting"], ["HbA1c", "hba1c|hb\\s*a1c|\\ba1c\\b|glyc\\w*ated\\s+h(?:a)?emoglobin"], ["Total Cholesterol", "total\\s+cholesterol|cholesterol\\W+total|^\\W*cholesterol\\b"], ["Triglycerides", "triglyceride"], ["HDL Cholesterol", "\\bhdl\\b"], ["LDL Cholesterol", "\\bldl\\b"], ["Creatinine", "creatinine"], ["Vitamin D", "vitamin\\s*d\\b|25\\W*(?:oh|hydroxy)"], ["SGPT (ALT)", "\\bsgpt\\b|\\balt\\b|alanine\\s+(?:amino|trans)"], ["SGOT (AST)", "\\bsgot\\b|\\bast\\b|aspartate\\s+(?:amino|trans)"], ["TSH", "\\btsh\\b|thyroid stimulating"], ["Random Blood Sugar", "random\\s+(?:blood\\s+)?(?:sugar|glucose)|\\brbs\\b|glucose\\W+random"], ["Post Prandial Blood Sugar", "post\\s*-?\\s*prandial|\\bppbs\\b|\\bppg\\b|\\bpp\\s+(?:blood\\s+)?(?:sugar|glucose)"]], "typical": {"Hemoglobin": [[10, 15], [14, 19]], "RBC Count": [[3.5, 4.8], [5, 6.5]], "Hematocrit (PCV)": [[33, 42], [43, 55]], "MCV": [[75, 85], [95, 105]], "MCH": [[24, 28], [30, 35]], "MCHC": [[30, 33], [34, 38]], "WBC Count": [[3000, 5500], [9000, 12500]], "Platelet Count": [[100000, 175000], [350000, 500000]], "Neutrophils": [[35, 50], [65, 80]], "Lymphocytes": [[15, 25], [35, 50]], "Monocytes": [[0, 4], [5, 12]], "Eosinophils": [[0, 2], [3, 8]], "Basophils": [[0, 1], [1, 3]], "Fasting Blood Sugar": [[60, 75], [95, 126]], "HbA1c": [[0, 4.6], [5.5, 7]], "Total Cholesterol": [[0, 0], [170, 250]], "Triglycerides": [[0, 60], [120, 200]], "HDL Cholesterol": [[30, 60], [55, 10000000]], "LDL Cholesterol": [[0, 0], [70, 160]], "Creatinine": [[0.3, 0.9], [1, 1.5]], "Vitamin D": [[10, 32], [40, 110]], "SGPT (ALT)": [[0, 15], [30, 60]], "SGOT (AST)": [[0, 15], [30, 60]], "TSH": [[0.1, 0.7], [3.5, 6]], "Random Blood Sugar": [[0, 100], [120, 200]], "Post Prandial Blood Sugar": [[0, 100], [120, 200]]}, "limits": {"Hemoglobin": [3, 25], "RBC Count": [1, 9], "Hematocrit (PCV)": [10, 70], "MCV": [50, 130], "MCH": [10, 50], "MCHC": [20, 45], "WBC Count": [500, 100000], "Platelet Count": [5000, 1500000], "Neutrophils": [0, 100], "Lymphocytes": [0, 100], "Monocytes": [0, 50], "Eosinophils": [0, 60], "Basophils": [0, 20], "Fasting Blood Sugar": [30, 700], "HbA1c": [3, 20], "Total Cholesterol": [50, 600], "Triglycerides": [20, 5000], "HDL Cholesterol": [5, 150], "LDL Cholesterol": [10, 600], "Creatinine": [0.1, 25], "Vitamin D": [1, 400], "SGPT (ALT)": [1, 6000], "SGOT (AST)": [1, 6000], "TSH": [0.01, 100], "Random Blood Sugar": [30, 700], "Post Prandial Blood Sugar": [30, 700]}, "scaleBounds": {"WBC Count": [1000, 40000], "Platelet Count": [10000, 1000000]}, "info": {"ta": {"Hemoglobin": {"LOW": {"meaning": "ஹீமோகுளோபின் அளவு இயல்பை விடக் குறைவாக உள்ளது. இது இரத்தசோகைக்கான (அனீமியா) அறிகுறியாக இருக்கலாம்.", "reasons": "இரும்புச்சத்து, வைட்டமின் B12 அல்லது ஃபோலேட் குறைபாடு, அதிக மாதவிடாய் இரத்தப்போக்கு போன்றவை பொதுவான காரணங்கள்.", "risk": "சரிவிகித உணவு இல்லாமை, அதிக இரத்தப்போக்கு, கர்ப்பம், குடலில் புழுக்கள்.", "diet": "கீரை வகைகள், பீட்ரூட், பேரீச்சம்பழம், கொண்டைக்கடலை, பருப்பு, முட்டை, வெல்லம் சேர்த்துக் கொள்ளலாம். எலுமிச்சை அல்லது நெல்லிக்காய் சேர்த்தால் இரும்புச்சத்து நன்றாக உறிஞ்சப்படும்.", "doctor": "சோர்வு, மூச்சுத்திணறல், தலைசுற்றல் இருந்தால் அல்லது மதிப்பு மிகக் குறைவாக இருந்தால் விரைவில் மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "ஹீமோகுளோபின் அளவு இயல்பை விட அதிகமாக உள்ளது.", "reasons": "உடலில் நீர்ச்சத்து குறைவு, புகைப்பழக்கம், உயரமான இடங்களில் வசிப்பது போன்றவை காரணமாக இருக்கலாம்.", "risk": "", "diet": "போதுமான தண்ணீர் குடிக்கவும்.", "doctor": "காரணத்தை அறிய மருத்துவரிடம் காட்டவும்."}}, "RBC Count": {"LOW": {"meaning": "சிவப்பணுக்களின் எண்ணிக்கை குறைவாக உள்ளது. இது இரத்தசோகையுடன் தொடர்புடையதாக இருக்கலாம்.", "reasons": "இரும்புச்சத்து, வைட்டமின் B12 குறைபாடு அல்லது இரத்த இழப்பு.", "risk": "", "diet": "கீரை வகைகள், பீட்ரூட், பேரீச்சம்பழம், கொண்டைக்கடலை, பருப்பு, முட்டை, வெல்லம் சேர்த்துக் கொள்ளலாம். எலுமிச்சை அல்லது நெல்லிக்காய் சேர்த்தால் இரும்புச்சத்து நன்றாக உறிஞ்சப்படும்.", "doctor": "சோர்வு, மூச்சுத்திணறல், தலைசுற்றல் இருந்தால் அல்லது மதிப்பு மிகக் குறைவாக இருந்தால் விரைவில் மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "சிவப்பணுக்களின் எண்ணிக்கை அதிகமாக உள்ளது.", "reasons": "உடலில் நீர்ச்சத்து குறைவு, புகைப்பழக்கம், உயரமான இடங்களில் வசிப்பது போன்றவை காரணமாக இருக்கலாம்.", "risk": "", "diet": "போதுமான தண்ணீர் குடிக்கவும்.", "doctor": "காரணத்தை அறிய மருத்துவரிடம் காட்டவும்."}}, "Hematocrit (PCV)": {"LOW": {"meaning": "இரத்தத்தில் சிவப்பணுக்களின் விகிதம் குறைவாக உள்ளது. இது பொதுவாக இரத்தசோகையுடன் சேர்ந்து காணப்படும்.", "reasons": "இரும்புச்சத்து குறைபாடு அல்லது இரத்த இழப்பு.", "risk": "", "diet": "கீரை வகைகள், பீட்ரூட், பேரீச்சம்பழம், கொண்டைக்கடலை, பருப்பு, முட்டை, வெல்லம் சேர்த்துக் கொள்ளலாம். எலுமிச்சை அல்லது நெல்லிக்காய் சேர்த்தால் இரும்புச்சத்து நன்றாக உறிஞ்சப்படும்.", "doctor": "சோர்வு, மூச்சுத்திணறல், தலைசுற்றல் இருந்தால் அல்லது மதிப்பு மிகக் குறைவாக இருந்தால் விரைவில் மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "இரத்தத்தில் சிவப்பணுக்களின் விகிதம் அதிகமாக உள்ளது. நீர்ச்சத்து குறைவால் இப்படி இருக்கலாம்.", "reasons": "உடலில் நீர்ச்சத்து குறைவு, புகைப்பழக்கம், உயரமான இடங்களில் வசிப்பது போன்றவை காரணமாக இருக்கலாம்.", "risk": "", "diet": "போதுமான தண்ணீர் குடிக்கவும்.", "doctor": "மதிப்பு தொடர்ந்து அதிகமாக இருந்தால் மருத்துவரை அணுகவும்."}}, "MCV": {"LOW": {"meaning": "சிவப்பணுக்களின் அளவு சிறியதாக உள்ளது.", "reasons": "இரும்புச்சத்து குறைபாடு அல்லது தலசீமியா போன்ற மரபுக் காரணங்கள்.", "risk": "", "diet": "கீரை வகைகள், பீட்ரூட், பேரீச்சம்பழம், கொண்டைக்கடலை, பருப்பு, முட்டை, வெல்லம் சேர்த்துக் கொள்ளலாம். எலுமிச்சை அல்லது நெல்லிக்காய் சேர்த்தால் இரும்புச்சத்து நன்றாக உறிஞ்சப்படும்.", "doctor": "இரும்புச்சத்து பரிசோதனை (Ferritin) தேவையா என்று மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "சிவப்பணுக்களின் அளவு பெரியதாக உள்ளது.", "reasons": "வைட்டமின் B12 அல்லது ஃபோலேட் குறைபாடு, அதிக மது அருந்துதல், தைராய்டு பிரச்சினை.", "risk": "", "diet": "முட்டை, பால், தயிர், பருப்பு, கீரை வகைகளைச் சேர்த்துக் கொள்ளலாம்.", "doctor": "B12 பரிசோதனை தேவையா என்று மருத்துவரிடம் கேளுங்கள்."}}, "WBC Count": {"LOW": {"meaning": "வெள்ளையணுக்கள் குறைவாக உள்ளன. இது நோய் எதிர்ப்பு சக்தி குறைவதைக் காட்டலாம்.", "reasons": "வைரஸ் தொற்று, சில மருந்துகள், ஊட்டச்சத்து குறைபாடு.", "risk": "", "diet": "சத்தான சரிவிகித உணவு, போதுமான ஓய்வு.", "doctor": "அடிக்கடி தொற்று அல்லது காய்ச்சல் வந்தால் மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "வெள்ளையணுக்கள் அதிகமாக உள்ளன. உடலில் தொற்று அல்லது வீக்கம் இருக்கலாம்.", "reasons": "பாக்டீரியா தொற்று, வீக்கம், மன அழுத்தம், புகைப்பழக்கம்.", "risk": "", "diet": "", "doctor": "காய்ச்சல், வலி இருந்தால் மருத்துவரை அணுகவும்."}}, "Platelet Count": {"LOW": {"meaning": "இரத்தத் தட்டணுக்கள் குறைவாக உள்ளன. இது இரத்தம் உறைவதைப் பாதிக்கலாம்.", "reasons": "டெங்கு போன்ற வைரஸ் காய்ச்சல், சில மருந்துகள், வைட்டமின் குறைபாடு.", "risk": "", "diet": "நிறைய திரவங்கள் குடிக்கவும்.", "doctor": "காய்ச்சலுடன் இருந்தால், அல்லது மூக்கு, ஈறுகளில் இரத்தப்போக்கு, உடலில் தடிப்புகள் இருந்தால் உடனே மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "இரத்தத் தட்டணுக்கள் அதிகமாக உள்ளன.", "reasons": "தொற்று, வீக்கம், இரும்புச்சத்து குறைபாடு.", "risk": "", "diet": "", "doctor": "மருத்துவரிடம் காட்டி காரணத்தை அறியவும்."}}, "Neutrophils": {"LOW": {"meaning": "நியூட்ரோஃபில் வெள்ளையணுக்கள் குறைவாக உள்ளன.", "reasons": "வைரஸ் தொற்று, சில மருந்துகள்.", "risk": "", "diet": "", "doctor": "காய்ச்சல் இருந்தால் மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "நியூட்ரோஃபில் வெள்ளையணுக்கள் அதிகமாக உள்ளன. இது பெரும்பாலும் பாக்டீரியா தொற்றைக் குறிக்கும்.", "reasons": "பாக்டீரியா தொற்று, மன அழுத்தம், புகைப்பழக்கம்.", "risk": "", "diet": "", "doctor": "காய்ச்சல், வலி இருந்தால் மருத்துவரை அணுகவும்."}}, "Lymphocytes": {"LOW": {"meaning": "லிம்போசைட் வெள்ளையணுக்கள் குறைவாக உள்ளன.", "reasons": "தொற்று, மன அழுத்தம், சில மருந்துகள்.", "risk": "", "diet": "", "doctor": "மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "லிம்போசைட் வெள்ளையணுக்கள் அதிகமாக உள்ளன. இது பெரும்பாலும் வைரஸ் தொற்றைக் குறிக்கும்.", "reasons": "வைரஸ் தொற்று.", "risk": "", "diet": "", "doctor": "அறிகுறிகள் தொடர்ந்தால் மருத்துவரை அணுகவும்."}}, "Fasting Blood Sugar": {"LOW": {"meaning": "இரத்தச் சர்க்கரை அளவு குறைவாக உள்ளது.", "reasons": "நீண்ட நேரம் சாப்பிடாமல் இருப்பது, சில மருந்துகள்.", "risk": "", "diet": "வியர்வை, நடுக்கம், தலைசுற்றல் இருந்தால் இனிப்பான ஏதாவது சாப்பிடவும்.", "doctor": "அடிக்கடி இப்படி இருந்தால் மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "வெறும் வயிற்றில் இரத்தச் சர்க்கரை அளவு அதிகமாக உள்ளது. இது நீரிழிவுக்கு முந்தைய நிலை அல்லது நீரிழிவாக இருக்கலாம். இந்தப் பரிசோதனை வெறும் வயிற்றில் எடுக்கப்பட்டதா என்பதையும் உறுதிசெய்யவும்.", "reasons": "பரிசோதனைக்கு முன் உணவு உண்டிருத்தல், மன அழுத்தம், சில மருந்துகள்.", "risk": "குடும்பத்தில் நீரிழிவு, உடல் பருமன், உடற்பயிற்சி இல்லாமை, அதிக இனிப்பு உணவுகள்.", "diet": "இனிப்பு, குளிர்பானங்கள், வெள்ளை அரிசி அளவைக் குறைத்து, காய்கறி, கீரை, கேழ்வரகு, கம்பு போன்ற சிறுதானியங்களைச் சேர்க்கவும். தினமும் 30 நிமிடம் நடைப்பயிற்சி செய்யவும்.", "doctor": "நீரிழிவை உறுதிசெய்ய HbA1c போன்ற பரிசோதனைகள் தேவைப்படலாம். மருத்துவரை அணுகவும்."}}, "Total Cholesterol": {"HIGH": {"meaning": "மொத்த கொலஸ்ட்ரால் அதிகமாக உள்ளது. இது நீண்ட காலத்தில் இதய நோய் அபாயத்தை அதிகரிக்கலாம்.", "reasons": "கொழுப்பு அதிகமான உணவு, உடற்பயிற்சி இல்லாமை, மரபு.", "risk": "குடும்பத்தில் இதய நோய், உடல் பருமன், புகைப்பழக்கம், நீரிழிவு, உயர் இரத்த அழுத்தம்.", "diet": "வறுத்த உணவு, நெய், வனஸ்பதி, இறைச்சிக் கொழுப்பைக் குறைக்கவும். ஓட்ஸ், பழங்கள், காய்கறிகள், கொட்டைகள் சேர்க்கவும். தினமும் நடைப்பயிற்சி செய்யவும்.", "doctor": "LDL, HDL, ட்ரைகிளிசரைடு பரிசோதனைகள் தேவையா என்று மருத்துவரிடம் கேளுங்கள்."}}, "TSH": {"LOW": {"meaning": "தைராய்டு தூண்டும் ஹார்மோன் (TSH) குறைவாக உள்ளது. தைராய்டு அதிகமாகச் செயல்படுவதை (ஹைப்பர்தைராய்டிசம்) குறிக்கலாம்.", "reasons": "தைராய்டு சுரப்பி அதிகமாகச் செயல்படுதல், சில மருந்துகள்.", "risk": "பெண்கள், குடும்பத்தில் தைராய்டு பிரச்சினை.", "diet": "", "doctor": "T3, T4 பரிசோதனைகள் தேவையா என்று மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "TSH அதிகமாக உள்ளது. தைராய்டு குறைவாகச் செயல்படுவதை (ஹைப்போதைராய்டிசம்) குறிக்கலாம்.", "reasons": "தைராய்டு சுரப்பி குறைவாகச் செயல்படுதல், அயோடின் குறைபாடு.", "risk": "பெண்கள், குடும்பத்தில் தைராய்டு பிரச்சினை, 40 வயதுக்கு மேல்.", "diet": "அயோடின் உப்பைப் பயன்படுத்தவும். சீரான உணவு, தினசரி உடற்பயிற்சி.", "doctor": "எடை கூடுதல், சோர்வு, குளிர் தாங்க முடியாமை இருந்தால் மருத்துவரை அணுகவும்."}}, "MCH": {"LOW": {"meaning": "சிவப்பணு ஒன்றில் உள்ள ஹீமோகுளோபின் அளவு குறைவாக உள்ளது.", "reasons": "இரும்புச்சத்து குறைபாடு.", "risk": "", "diet": "கீரை வகைகள், பீட்ரூட், பேரீச்சம்பழம், கொண்டைக்கடலை, பருப்பு, முட்டை, வெல்லம் சேர்த்துக் கொள்ளலாம். எலுமிச்சை அல்லது நெல்லிக்காய் சேர்த்தால் இரும்புச்சத்து நன்றாக உறிஞ்சப்படும்.", "doctor": "ஹீமோகுளோபின், MCV மதிப்புகளுடன் சேர்த்து மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "சிவப்பணு ஒன்றில் உள்ள ஹீமோகுளோபின் அளவு அதிகமாக உள்ளது.", "reasons": "வைட்டமின் B12 அல்லது ஃபோலேட் குறைபாடு.", "risk": "", "diet": "முட்டை, பால், தயிர், பருப்பு, கீரை வகைகளைச் சேர்த்துக் கொள்ளலாம்.", "doctor": "B12 பரிசோதனை தேவையா என்று மருத்துவரிடம் கேளுங்கள்."}}, "MCHC": {"LOW": {"meaning": "சிவப்பணுக்களில் ஹீமோகுளோபின் செறிவு குறைவாக உள்ளது (நிறம் குறைந்த சிவப்பணுக்கள்).", "reasons": "இரும்புச்சத்து குறைபாடு.", "risk": "", "diet": "கீரை வகைகள், பீட்ரூட், பேரீச்சம்பழம், கொண்டைக்கடலை, பருப்பு, முட்டை, வெல்லம் சேர்த்துக் கொள்ளலாம். எலுமிச்சை அல்லது நெல்லிக்காய் சேர்த்தால் இரும்புச்சத்து நன்றாக உறிஞ்சப்படும்.", "doctor": "ஹீமோகுளோபின், MCV மதிப்புகளுடன் சேர்த்து மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "சிவப்பணுக்களில் ஹீமோகுளோபின் செறிவு சற்று அதிகமாக உள்ளது.", "reasons": "இரத்த மாதிரியை எடுக்கும் அல்லது பரிசோதிக்கும் முறையில் ஏற்படும் மாறுபாடு, அல்லது அரிதாகச் சில சிவப்பணு நிலைகள்.", "risk": "", "diet": "", "doctor": "மற்ற இரத்த மதிப்புகள் இயல்பாக இருந்தால் இது பெரும்பாலும் முக்கியமில்லாத மாறுபாடாக இருக்கலாம். உறுதிசெய்ய மருத்துவரிடம் கேளுங்கள்."}}, "Monocytes": {"LOW": {"meaning": "மோனோசைட் வெள்ளையணுக்கள் குறைவாக உள்ளன.", "reasons": "சில மருந்துகள், ஸ்டீராய்டு பயன்பாடு, சில சமயம் சாதாரண மாறுபாடு.", "risk": "", "diet": "", "doctor": "மற்ற இரத்த மதிப்புகளுடன் சேர்த்து மருத்துவர் மதிப்பிடுவார். மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "மோனோசைட் வெள்ளையணுக்கள் அதிகமாக உள்ளன.", "reasons": "நீண்டகாலத் தொற்று, வீக்கம், தொற்றிலிருந்து குணமடையும் காலம்.", "risk": "", "diet": "", "doctor": "காய்ச்சல், எடை குறைதல் போன்ற அறிகுறிகள் இருந்தால் மருத்துவரை அணுகவும்."}}, "Eosinophils": {"LOW": {"meaning": "ஈசினோஃபில் வெள்ளையணுக்கள் குறைவாக உள்ளன.", "reasons": "ஸ்டீராய்டு மருந்துகள், மன அழுத்தம். பெரும்பாலும் முக்கியமில்லாத மாறுபாடு.", "risk": "", "diet": "", "doctor": "மற்ற இரத்த மதிப்புகளுடன் சேர்த்து மருத்துவர் மதிப்பிடுவார். மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "ஈசினோஃபில் வெள்ளையணுக்கள் அதிகமாக உள்ளன.", "reasons": "ஒவ்வாமை, ஆஸ்துமா, தோல் ஒவ்வாமை, குடல் புழுக்கள்.", "risk": "ஒவ்வாமை வரலாறு, தூசி, சில உணவுகள் அல்லது மருந்துகளால் ஒவ்வாமை.", "diet": "உங்களுக்கு ஒவ்வாத பொருட்களைத் தவிர்க்கவும்.", "doctor": "இருமல், மூச்சிரைப்பு, தோல் அரிப்பு இருந்தால் மருத்துவரை அணுகவும்."}}, "Basophils": {"LOW": {"meaning": "பேசோஃபில் வெள்ளையணுக்கள் குறைவாக உள்ளன. இது பொதுவாக முக்கியமில்லாத மாறுபாடு.", "reasons": "", "risk": "", "diet": "", "doctor": "மற்ற இரத்த மதிப்புகளுடன் சேர்த்து மருத்துவர் மதிப்பிடுவார். மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "பேசோஃபில் வெள்ளையணுக்கள் அதிகமாக உள்ளன.", "reasons": "ஒவ்வாமை, வீக்கம், அரிதாக இரத்த தொடர்பான நோய்கள்.", "risk": "", "diet": "", "doctor": "மருத்துவரிடம் காட்டி காரணத்தை அறியவும்."}}, "HbA1c": {"LOW": {"meaning": "கடந்த 2-3 மாத சராசரி சர்க்கரை அளவு குறைவாகக் காணப்படுகிறது.", "reasons": "இரத்தசோகை, சமீபத்திய இரத்த இழப்பு இருந்தால் இப்படிக் காட்டலாம்.", "risk": "", "diet": "", "doctor": "மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "கடந்த 2-3 மாதங்களின் சராசரி இரத்தச் சர்க்கரை அளவு அதிகமாக உள்ளது. இது நீரிழிவுக்கு முந்தைய நிலை அல்லது நீரிழிவாக இருக்கலாம்.", "reasons": "சர்க்கரை கட்டுப்பாடு சரியில்லாமை, இனிப்பு, மாவுச்சத்து அதிகம்.", "risk": "குடும்பத்தில் நீரிழிவு, உடல் பருமன், உடற்பயிற்சி இல்லாமை, அதிக இனிப்பு உணவுகள்.", "diet": "இனிப்பு, குளிர்பானங்கள், வெள்ளை அரிசி அளவைக் குறைத்து, காய்கறி, கீரை, கேழ்வரகு, கம்பு போன்ற சிறுதானியங்களைச் சேர்க்கவும். தினமும் 30 நிமிடம் நடைப்பயிற்சி செய்யவும்.", "doctor": "மருத்துவரை அணுகி நீரிழிவு உறுதியா என்றும் சிகிச்சை தேவையா என்றும் கேளுங்கள்."}}, "Triglycerides": {"HIGH": {"meaning": "டிரைகிளிசரைடு (இரத்தக் கொழுப்பு) அதிகமாக உள்ளது. இது இதய நோய் அபாயத்தை அதிகரிக்கலாம்.", "reasons": "இனிப்பு, மாவுச்சத்து, வறுத்த உணவு அதிகம், மது, உடற்பயிற்சி இல்லாமை, நீரிழிவு.", "risk": "குடும்பத்தில் இதய நோய், உடல் பருமன், புகைப்பழக்கம், நீரிழிவு, உயர் இரத்த அழுத்தம்.", "diet": "இனிப்பு, குளிர்பானங்கள், பேக்கரி உணவுகள், வெள்ளை அரிசி, மது குறைக்கவும். மீன், கொட்டைகள், காய்கறிகள் சேர்த்து தினமும் நடைப்பயிற்சி செய்யவும்.", "doctor": "மதிப்பு மிக அதிகமாக இருந்தாலோ வயிற்று வலி இருந்தாலோ விரைவில் மருத்துவரை அணுகவும்."}}, "HDL Cholesterol": {"LOW": {"meaning": "HDL ('நல்ல' கொலஸ்ட்ரால்) குறைவாக உள்ளது. இது இதய நோய் அபாயத்தை அதிகரிக்கலாம்.", "reasons": "உடற்பயிற்சி இல்லாமை, புகைப்பழக்கம், உடல் பருமன், நீரிழிவு.", "risk": "குடும்பத்தில் இதய நோய், உடல் பருமன், புகைப்பழக்கம், நீரிழிவு, உயர் இரத்த அழுத்தம்.", "diet": "தினமும் நடைப்பயிற்சி அல்லது உடற்பயிற்சி செய்யவும், புகைப்பழக்கத்தை நிறுத்தவும். கொட்டைகள், மீன், பழங்கள், காய்கறிகள் சேர்க்கவும்.", "doctor": "மற்ற கொலஸ்ட்ரால் மதிப்புகளுடன் சேர்த்து மருத்துவரிடம் கேளுங்கள்."}}, "LDL Cholesterol": {"HIGH": {"meaning": "LDL ('கெட்ட' கொலஸ்ட்ரால்) அதிகமாக உள்ளது. இது நீண்ட காலத்தில் இதய நோய் அபாயத்தை அதிகரிக்கலாம்.", "reasons": "கொழுப்பு அதிகமான உணவு, உடற்பயிற்சி இல்லாமை, மரபு.", "risk": "குடும்பத்தில் இதய நோய், உடல் பருமன், புகைப்பழக்கம், நீரிழிவு, உயர் இரத்த அழுத்தம்.", "diet": "வறுத்த உணவு, நெய், வனஸ்பதி, இறைச்சிக் கொழுப்பைக் குறைக்கவும். ஓட்ஸ், பழங்கள், காய்கறிகள், கொட்டைகள் சேர்க்கவும். தினமும் நடைப்பயிற்சி செய்யவும்.", "doctor": "உங்கள் இதய அபாயத்தைப் பொறுத்து சிகிச்சை தேவையா என்று மருத்துவரிடம் கேளுங்கள்."}}, "Creatinine": {"LOW": {"meaning": "கிரியாட்டினின் குறைவாக உள்ளது. இது பெரும்பாலும் தசை குறைவு அல்லது அதிக நீர் குடிப்பதால் இருக்கலாம்.", "reasons": "குறைந்த தசை, கர்ப்பம்.", "risk": "", "diet": "", "doctor": "மருத்துவரிடம் கேளுங்கள்."}, "HIGH": {"meaning": "கிரியாட்டினின் அதிகமாக உள்ளது. சிறுநீரகம் இரத்தத்தை முழுமையாக வடிகட்டவில்லை என்பதற்கான அறிகுறியாக இருக்கலாம்.", "reasons": "நீர்ச்சத்து குறைவு, சிறுநீரக பாதிப்பு, அதிக இறைச்சி உணவு அல்லது கடுமையான உடற்பயிற்சி, சில மருந்துகள்.", "risk": "நீரிழிவு, உயர் இரத்த அழுத்தம், குடும்பத்தில் சிறுநீரக நோய், வலி மாத்திரைகளை அடிக்கடி எடுத்தல்.", "diet": "போதுமான தண்ணீர் குடிக்கவும். மருத்துவர் சொல்லாமல் வலி மாத்திரைகளை எடுக்க வேண்டாம்.", "doctor": "விரைவில் மருத்துவரை அணுகவும். கால் வீக்கம், சிறுநீர் குறைவு இருந்தால் உடனே காட்டவும்."}}, "Vitamin D": {"LOW": {"meaning": "வைட்டமின் D குறைவாக உள்ளது. எலும்பு வலி, சோர்வு, தசை வலிக்குக் காரணமாகலாம்.", "reasons": "சூரிய ஒளி குறைவு, உணவில் குறைவு, வயது, அதிக உடல் எடை.", "risk": "வீட்டுக்குள் அதிக நேரம், மூடிய ஆடை, கருமையான தோல், வெயிலில் செல்லாமை.", "diet": "காலை அல்லது மாலை இளம் வெயிலில் தினமும் 15-20 நிமிடம் இருக்கலாம். முட்டை மஞ்சள் கரு, மீன், பால், காளான் உதவும். சப்ளிமெண்ட் அளவை மருத்துவர்தான் தீர்மானிக்க வேண்டும்.", "doctor": "எலும்பு வலி தொடர்ந்தால் மருத்துவரை அணுகி சரியான அளவில் சப்ளிமெண்ட் பெறவும்."}, "HIGH": {"meaning": "வைட்டமின் D அதிகமாக உள்ளது. பொதுவாக அதிக சப்ளிமெண்ட் எடுப்பதால் இப்படி வரலாம்.", "reasons": "அதிக அளவு வைட்டமின் D மாத்திரைகள்.", "risk": "", "diet": "", "doctor": "சப்ளிமெண்ட் எடுத்துக்கொண்டிருந்தால் அளவை மருத்துவரிடம் உறுதிசெய்யுங்கள்."}}, "SGPT (ALT)": {"HIGH": {"meaning": "கல்லீரல் நொதி (SGPT/ALT) அதிகமாக உள்ளது. கல்லீரலில் வீக்கம் அல்லது பாதிப்பு இருக்கலாம்.", "reasons": "கொழுப்பு கல்லீரல், மது, ஹெபடைடிஸ் தொற்று, சில மருந்துகள்.", "risk": "உடல் பருமன், நீரிழிவு, அதிக மது, கொழுப்பு அதிகமான உணவு.", "diet": "மது முழுமையாகத் தவிர்க்கவும். வறுத்த, எண்ணெய் அதிகமான உணவுகளைக் குறைக்கவும். காய்கறி, பழங்கள் சேர்த்து, தினமும் நடைப்பயிற்சி செய்யவும். மருத்துவர் சொல்லாமல் மூலிகை, மாத்திரைகளை எடுக்க வேண்டாம்.", "doctor": "கண், தோல் மஞ்சளாதல், வயிற்று வலி, தொடர் வாந்தி இருந்தால் உடனே மருத்துவரை அணுகவும். மற்றபடி மருத்துவரிடம் காட்டி மேலும் பரிசோதனைகள் செய்யவும்."}}, "SGOT (AST)": {"HIGH": {"meaning": "நொதி (SGOT/AST) அதிகமாக உள்ளது. கல்லீரல் அல்லது தசை பாதிப்பைக் குறிக்கலாம்.", "reasons": "கொழுப்பு கல்லீரல், மது, ஹெபடைடிஸ் தொற்று, கடுமையான உடற்பயிற்சி, சில மருந்துகள்.", "risk": "உடல் பருமன், நீரிழிவு, அதிக மது.", "diet": "மது முழுமையாகத் தவிர்க்கவும். வறுத்த, எண்ணெய் அதிகமான உணவுகளைக் குறைக்கவும். காய்கறி, பழங்கள் சேர்த்து, தினமும் நடைப்பயிற்சி செய்யவும். மருத்துவர் சொல்லாமல் மூலிகை, மாத்திரைகளை எடுக்க வேண்டாம்.", "doctor": "கண், தோல் மஞ்சளாதல், வயிற்று வலி, தொடர் வாந்தி இருந்தால் உடனே மருத்துவரை அணுகவும். மற்றபடி மருத்துவரிடம் காட்டி மேலும் பரிசோதனைகள் செய்யவும்."}}, "Random Blood Sugar": {"LOW": {"meaning": "இரத்தச் சர்க்கரை அளவு குறைவாக உள்ளது.", "reasons": "நீண்ட நேரம் சாப்பிடாமல் இருப்பது, சில மருந்துகள்.", "risk": "", "diet": "வியர்வை, நடுக்கம், தலைசுற்றல் இருந்தால் இனிப்பான ஏதாவது சாப்பிடவும்.", "doctor": "அடிக்கடி இப்படி இருந்தால் மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "நாளின் எந்த நேரத்திலும் எடுக்கப்பட்ட (ரேண்டம்) இரத்தச் சர்க்கரை அளவு இயல்பு வரம்பை விட அதிகமாக உள்ளது. இது தொடர்ந்து அதிகமாக இருந்தால் நீரிழிவுக்கு முந்தைய நிலை அல்லது நீரிழிவாக இருக்கலாம். உறுதிப்படுத்த மருத்துவர் வெறும் வயிற்றுச் சர்க்கரை, HbA1c பரிசோதனைகளைப் பரிந்துரைக்கலாம்.", "reasons": "சமீபத்தில் சாப்பிட்ட உணவு அல்லது இனிப்பு, மன அழுத்தம், உடல்நலக்குறைவு, சில மருந்துகள், நீரிழிவு.", "risk": "குடும்பத்தில் நீரிழிவு, உடல் பருமன், உடற்பயிற்சி இல்லாமை, அதிக இனிப்பு உணவுகள்.", "diet": "இனிப்பு, குளிர்பானங்கள், வெள்ளை அரிசி அளவைக் குறைத்து, காய்கறி, கீரை, கேழ்வரகு, கம்பு போன்ற சிறுதானியங்களைச் சேர்க்கவும். தினமும் 30 நிமிடம் நடைப்பயிற்சி செய்யவும்.", "doctor": "உறுதிப்படுத்தும் பரிசோதனைகளுக்கு விரைவில் மருத்துவரை அணுகவும். மிகுந்த தாகம், அடிக்கடி சிறுநீர், அதிக சோர்வு அல்லது குழப்பம் இருந்தால் உடனே மருத்துவ உதவி பெறவும்."}}, "Post Prandial Blood Sugar": {"LOW": {"meaning": "இரத்தச் சர்க்கரை அளவு குறைவாக உள்ளது.", "reasons": "நீண்ட நேரம் சாப்பிடாமல் இருப்பது, சில மருந்துகள்.", "risk": "", "diet": "வியர்வை, நடுக்கம், தலைசுற்றல் இருந்தால் இனிப்பான ஏதாவது சாப்பிடவும்.", "doctor": "அடிக்கடி இப்படி இருந்தால் மருத்துவரை அணுகவும்."}, "HIGH": {"meaning": "உணவுக்குப் பின் (பொதுவாக சாப்பிட்ட 2 மணி நேரத்துக்குப் பிறகு) எடுக்கப்பட்ட இரத்தச் சர்க்கரை அளவு இயல்பு வரம்பை விட அதிகமாக உள்ளது. இது நீரிழிவுக்கு முந்தைய நிலை அல்லது நீரிழிவைக் குறிக்கலாம். உறுதிப்படுத்த வெறும் வயிற்றுச் சர்க்கரை, HbA1c பரிசோதனைகள் தேவைப்படலாம்.", "reasons": "அதிக மாவுச்சத்து அல்லது இனிப்பு உணவு, உடற்பயிற்சி இல்லாமை, மன அழுத்தம், நீரிழிவு.", "risk": "குடும்பத்தில் நீரிழிவு, உடல் பருமன், உடற்பயிற்சி இல்லாமை, அதிக இனிப்பு உணவுகள்.", "diet": "இனிப்பு, குளிர்பானங்கள், வெள்ளை அரிசி அளவைக் குறைத்து, காய்கறி, கீரை, கேழ்வரகு, கம்பு போன்ற சிறுதானியங்களைச் சேர்க்கவும். தினமும் 30 நிமிடம் நடைப்பயிற்சி செய்யவும்.", "doctor": "உறுதிப்படுத்தும் பரிசோதனைகளுக்கு விரைவில் மருத்துவரை அணுகவும். மிகுந்த தாகம், அடிக்கடி சிறுநீர், அதிக சோர்வு அல்லது குழப்பம் இருந்தால் உடனே மருத்துவ உதவி பெறவும்."}}}, "en": {"Hemoglobin": {"LOW": {"meaning": "Your hemoglobin is lower than normal. This can be a sign of anemia.", "reasons": "Common causes are iron, vitamin B12 or folate deficiency and heavy menstrual bleeding.", "risk": "Poor diet, blood loss, pregnancy, intestinal worms.", "diet": "Include green leafy vegetables, beetroot, dates, chickpeas, lentils, eggs and jaggery. Having lemon or amla with meals helps your body absorb iron.", "doctor": "See a doctor soon if you feel tired, breathless or dizzy, or if the value is very low."}, "HIGH": {"meaning": "Your hemoglobin is higher than normal.", "reasons": "Dehydration, smoking, or living at high altitude can cause this.", "risk": "", "diet": "Drink enough water.", "doctor": "Please see a doctor to find the cause."}}, "RBC Count": {"LOW": {"meaning": "Your red blood cell count is low. This may be linked to anemia.", "reasons": "Iron or vitamin B12 deficiency, or blood loss.", "risk": "", "diet": "Include green leafy vegetables, beetroot, dates, chickpeas, lentils, eggs and jaggery. Having lemon or amla with meals helps your body absorb iron.", "doctor": "See a doctor soon if you feel tired, breathless or dizzy, or if the value is very low."}, "HIGH": {"meaning": "Your red blood cell count is high.", "reasons": "Dehydration, smoking, or living at high altitude can cause this.", "risk": "", "diet": "Drink enough water.", "doctor": "Please see a doctor to find the cause."}}, "Hematocrit (PCV)": {"LOW": {"meaning": "The share of red cells in your blood is low. It usually goes along with anemia.", "reasons": "Iron deficiency or blood loss.", "risk": "", "diet": "Include green leafy vegetables, beetroot, dates, chickpeas, lentils, eggs and jaggery. Having lemon or amla with meals helps your body absorb iron.", "doctor": "See a doctor soon if you feel tired, breathless or dizzy, or if the value is very low."}, "HIGH": {"meaning": "The share of red cells in your blood is high. Dehydration can cause this.", "reasons": "Dehydration, smoking, or living at high altitude can cause this.", "risk": "", "diet": "Drink enough water.", "doctor": "See a doctor if it stays high."}}, "MCV": {"LOW": {"meaning": "Your red blood cells are smaller than normal.", "reasons": "Iron deficiency, or inherited conditions such as thalassemia.", "risk": "", "diet": "Include green leafy vegetables, beetroot, dates, chickpeas, lentils, eggs and jaggery. Having lemon or amla with meals helps your body absorb iron.", "doctor": "Ask your doctor whether an iron test (ferritin) is needed."}, "HIGH": {"meaning": "Your red blood cells are larger than normal.", "reasons": "Vitamin B12 or folate deficiency, heavy alcohol use, thyroid problems.", "risk": "", "diet": "Eggs, milk, curd, lentils and green leafy vegetables can help.", "doctor": "Ask your doctor whether a B12 test is needed."}}, "MCH": {"LOW": {"meaning": "Each red cell carries less hemoglobin than normal.", "reasons": "Iron deficiency.", "risk": "", "diet": "Include green leafy vegetables, beetroot, dates, chickpeas, lentils, eggs and jaggery. Having lemon or amla with meals helps your body absorb iron.", "doctor": "Discuss with your doctor along with your hemoglobin and MCV."}, "HIGH": {"meaning": "Each red cell carries more hemoglobin than normal.", "reasons": "Vitamin B12 or folate deficiency.", "risk": "", "diet": "Eggs, milk, curd, lentils and green leafy vegetables can help.", "doctor": "Ask your doctor whether a B12 test is needed."}}, "MCHC": {"LOW": {"meaning": "The hemoglobin concentration in your red cells is low (paler red cells).", "reasons": "Iron deficiency.", "risk": "", "diet": "Include green leafy vegetables, beetroot, dates, chickpeas, lentils, eggs and jaggery. Having lemon or amla with meals helps your body absorb iron.", "doctor": "Discuss with your doctor along with your hemoglobin and MCV."}, "HIGH": {"meaning": "The hemoglobin concentration in your red cells is slightly high.", "reasons": "Variation in how the blood sample was collected or tested, or rarely certain red cell conditions.", "risk": "", "diet": "", "doctor": "If your other blood values are normal, this is often not significant. Ask your doctor to confirm."}}, "WBC Count": {"LOW": {"meaning": "Your white blood cell count is low. This may mean reduced immunity.", "reasons": "Viral infection, some medicines, poor nutrition.", "risk": "", "diet": "Eat a balanced, nutritious diet and get enough rest.", "doctor": "See a doctor if you get frequent infections or fever."}, "HIGH": {"meaning": "Your white blood cell count is high. There may be an infection or inflammation.", "reasons": "Bacterial infection, inflammation, stress, smoking.", "risk": "", "diet": "", "doctor": "See a doctor if you have fever or pain."}}, "Platelet Count": {"LOW": {"meaning": "Your platelet count is low. This can affect blood clotting.", "reasons": "Viral fevers such as dengue, some medicines, vitamin deficiency.", "risk": "", "diet": "Drink plenty of fluids.", "doctor": "See a doctor immediately if you also have fever, bleeding from the nose or gums, or skin rashes."}, "HIGH": {"meaning": "Your platelet count is high.", "reasons": "Infection, inflammation, iron deficiency.", "risk": "", "diet": "", "doctor": "Please see a doctor to find the cause."}}, "Neutrophils": {"LOW": {"meaning": "Your neutrophil count is low.", "reasons": "Viral infection, some medicines.", "risk": "", "diet": "", "doctor": "See a doctor if you have fever."}, "HIGH": {"meaning": "Your neutrophil count is high. This most often points to a bacterial infection.", "reasons": "Bacterial infection, stress, smoking.", "risk": "", "diet": "", "doctor": "See a doctor if you have fever or pain."}}, "Lymphocytes": {"LOW": {"meaning": "Your lymphocyte count is low.", "reasons": "Infection, stress, some medicines.", "risk": "", "diet": "", "doctor": "Please ask your doctor."}, "HIGH": {"meaning": "Your lymphocyte count is high. This most often points to a viral infection.", "reasons": "Viral infection.", "risk": "", "diet": "", "doctor": "See a doctor if symptoms continue."}}, "Monocytes": {"LOW": {"meaning": "Your monocyte count is low.", "reasons": "Some medicines, steroid use, sometimes normal variation.", "risk": "", "diet": "", "doctor": "A doctor will interpret this together with your other blood values. Please ask your doctor."}, "HIGH": {"meaning": "Your monocyte count is high.", "reasons": "Long-standing infection, inflammation, recovery after an infection.", "risk": "", "diet": "", "doctor": "See a doctor if you have symptoms such as fever or weight loss."}}, "Eosinophils": {"LOW": {"meaning": "Your eosinophil count is low.", "reasons": "Steroid medicines, stress. Usually not significant.", "risk": "", "diet": "", "doctor": "A doctor will interpret this together with your other blood values. Please ask your doctor."}, "HIGH": {"meaning": "Your eosinophil count is high.", "reasons": "Allergies, asthma, skin allergies, intestinal worms.", "risk": "History of allergy, dust, certain foods or medicines.", "diet": "Avoid things you are allergic to.", "doctor": "See a doctor if you have cough, wheezing or skin itching."}}, "Basophils": {"LOW": {"meaning": "Your basophil count is low. This is usually not significant.", "reasons": "", "risk": "", "diet": "", "doctor": "A doctor will interpret this together with your other blood values. Please ask your doctor."}, "HIGH": {"meaning": "Your basophil count is high.", "reasons": "Allergy, inflammation, rarely blood disorders.", "risk": "", "diet": "", "doctor": "Please see a doctor to find the cause."}}, "Fasting Blood Sugar": {"LOW": {"meaning": "Your blood sugar is low.", "reasons": "Going a long time without food, some medicines.", "risk": "", "diet": "If you feel sweaty, shaky or dizzy, have something sweet right away.", "doctor": "See a doctor if this happens often."}, "HIGH": {"meaning": "Your fasting blood sugar is high. This may point to pre-diabetes or diabetes. Also check that the test was done on an empty stomach.", "reasons": "Eating before the test, stress, some medicines.", "risk": "Family history of diabetes, obesity, lack of exercise, a lot of sweet food.", "diet": "Cut down on sweets, soft drinks and white rice. Include vegetables, greens and millets such as ragi and kambu. Walk 30 minutes daily.", "doctor": "Further tests such as HbA1c may be needed to confirm. Please see a doctor."}}, "HbA1c": {"LOW": {"meaning": "Your average blood sugar over the last 2-3 months appears low.", "reasons": "Anemia or recent blood loss can make the result look lower.", "risk": "", "diet": "", "doctor": "Please ask your doctor."}, "HIGH": {"meaning": "Your average blood sugar over the last 2-3 months is high. This may point to pre-diabetes or diabetes.", "reasons": "Poorly controlled sugar, a lot of sweets and starch.", "risk": "Family history of diabetes, obesity, lack of exercise, a lot of sweet food.", "diet": "Cut down on sweets, soft drinks and white rice. Include vegetables, greens and millets such as ragi and kambu. Walk 30 minutes daily.", "doctor": "Please see a doctor to confirm and discuss whether treatment is needed."}}, "Total Cholesterol": {"HIGH": {"meaning": "Your total cholesterol is high. Over time this can raise the risk of heart disease.", "reasons": "Fatty diet, lack of exercise, family tendency.", "risk": "Family history of heart disease, obesity, smoking, diabetes, high blood pressure.", "diet": "Cut down on fried food, ghee, vanaspati and fatty meat. Add oats, fruits, vegetables and nuts. Walk daily.", "doctor": "Ask your doctor whether LDL, HDL and triglyceride tests are needed."}}, "Triglycerides": {"HIGH": {"meaning": "Your triglycerides (blood fat) are high. This can raise the risk of heart disease.", "reasons": "A lot of sweets, starch and fried food, alcohol, lack of exercise, diabetes.", "risk": "Family history of heart disease, obesity, smoking, diabetes, high blood pressure.", "diet": "Cut down on sweets, soft drinks, bakery items, white rice and alcohol. Eat fish, nuts and vegetables and walk daily.", "doctor": "See a doctor soon if the value is very high or you have stomach pain."}}, "HDL Cholesterol": {"LOW": {"meaning": "Your HDL ('good') cholesterol is low. This can raise the risk of heart disease.", "reasons": "Lack of exercise, smoking, obesity, diabetes.", "risk": "Family history of heart disease, obesity, smoking, diabetes, high blood pressure.", "diet": "Exercise or walk daily and quit smoking. Include nuts, fish, fruits and vegetables.", "doctor": "Discuss with your doctor along with your other cholesterol values."}}, "LDL Cholesterol": {"HIGH": {"meaning": "Your LDL ('bad') cholesterol is high. Over time this can raise the risk of heart disease.", "reasons": "Fatty diet, lack of exercise, family tendency.", "risk": "Family history of heart disease, obesity, smoking, diabetes, high blood pressure.", "diet": "Cut down on fried food, ghee, vanaspati and fatty meat. Add oats, fruits, vegetables and nuts. Walk daily.", "doctor": "Ask your doctor whether treatment is needed based on your overall heart risk."}}, "Creatinine": {"LOW": {"meaning": "Your creatinine is low. This is often due to low muscle mass or drinking a lot of water.", "reasons": "Low muscle mass, pregnancy.", "risk": "", "diet": "", "doctor": "Please ask your doctor."}, "HIGH": {"meaning": "Your creatinine is high. It may mean your kidneys are not filtering blood fully.", "reasons": "Dehydration, kidney damage, a very high-meat diet or heavy exercise, some medicines.", "risk": "Diabetes, high blood pressure, family history of kidney disease, frequent use of painkillers.", "diet": "Drink enough water. Do not take painkillers without a doctor's advice.", "doctor": "See a doctor soon. Go immediately if you have leg swelling or very little urine."}}, "Vitamin D": {"LOW": {"meaning": "Your vitamin D is low. It can cause bone pain, tiredness and muscle aches.", "reasons": "Little sunlight, low dietary intake, age, excess body weight.", "risk": "Spending most of the time indoors, covered clothing, darker skin, not going out in the sun.", "diet": "Spend 15-20 minutes in gentle morning or evening sun daily. Egg yolk, fish, milk and mushrooms help. Only a doctor should decide a supplement dose.", "doctor": "If bone pain continues, see a doctor for the right supplement dose."}, "HIGH": {"meaning": "Your vitamin D is high. This usually happens from taking too many supplements.", "reasons": "High-dose vitamin D tablets.", "risk": "", "diet": "", "doctor": "If you take supplements, confirm the dose with your doctor."}}, "SGPT (ALT)": {"HIGH": {"meaning": "Your liver enzyme (SGPT/ALT) is high. There may be inflammation or damage in the liver.", "reasons": "Fatty liver, alcohol, hepatitis infection, some medicines.", "risk": "Obesity, diabetes, heavy alcohol use, fatty diet.", "diet": "Avoid alcohol completely. Cut down on fried and oily food. Eat vegetables and fruits and walk daily. Do not take herbal products or tablets without a doctor's advice.", "doctor": "See a doctor immediately if your eyes or skin turn yellow, or you have stomach pain or repeated vomiting. Otherwise, see a doctor for further tests."}}, "SGOT (AST)": {"HIGH": {"meaning": "Your enzyme (SGOT/AST) is high. It can point to liver or muscle injury.", "reasons": "Fatty liver, alcohol, hepatitis infection, strenuous exercise, some medicines.", "risk": "Obesity, diabetes, heavy alcohol use.", "diet": "Avoid alcohol completely. Cut down on fried and oily food. Eat vegetables and fruits and walk daily. Do not take herbal products or tablets without a doctor's advice.", "doctor": "See a doctor immediately if your eyes or skin turn yellow, or you have stomach pain or repeated vomiting. Otherwise, see a doctor for further tests."}}, "TSH": {"LOW": {"meaning": "Your TSH is low. This may point to an overactive thyroid (hyperthyroidism).", "reasons": "Overactive thyroid gland, some medicines.", "risk": "Women, family history of thyroid problems.", "diet": "", "doctor": "Ask your doctor whether T3 and T4 tests are needed."}, "HIGH": {"meaning": "Your TSH is high. This may point to an underactive thyroid (hypothyroidism).", "reasons": "Underactive thyroid gland, iodine deficiency.", "risk": "Women, family history of thyroid problems, age above 40.", "diet": "Use iodized salt. Eat a balanced diet and exercise regularly.", "doctor": "See a doctor if you have weight gain, tiredness or feel unusually cold."}}, "Random Blood Sugar": {"LOW": {"meaning": "Your blood sugar is low.", "reasons": "Going a long time without food, some medicines.", "risk": "", "diet": "If you feel sweaty, shaky or dizzy, have something sweet right away.", "doctor": "See a doctor if this happens often."}, "HIGH": {"meaning": "Your random blood sugar (taken at any time of the day) is above the reference range. If it stays high, it can point to prediabetes or diabetes. A doctor usually confirms this with fasting sugar and HbA1c tests.", "reasons": "A recent meal or sweets, stress, illness, some medicines, or diabetes.", "risk": "Family history of diabetes, obesity, lack of exercise, a lot of sweet food.", "diet": "Cut down on sweets, soft drinks and white rice. Include vegetables, greens and millets such as ragi and kambu. Walk 30 minutes daily.", "doctor": "See a doctor soon for confirmation tests. If you feel very thirsty, pass urine very often, feel very weak or confused, get medical help immediately."}}, "Post Prandial Blood Sugar": {"LOW": {"meaning": "Your blood sugar is low.", "reasons": "Going a long time without food, some medicines.", "risk": "", "diet": "If you feel sweaty, shaky or dizzy, have something sweet right away.", "doctor": "See a doctor if this happens often."}, "HIGH": {"meaning": "Your blood sugar after a meal (usually 2 hours after eating) is above the reference range. This can point to prediabetes or diabetes. Fasting sugar and HbA1c tests may be needed to confirm.", "reasons": "A meal rich in starch or sweets, lack of exercise, stress, or diabetes.", "risk": "Family history of diabetes, obesity, lack of exercise, a lot of sweet food.", "diet": "Cut down on sweets, soft drinks and white rice. Include vegetables, greens and millets such as ragi and kambu. Walk 30 minutes daily.", "doctor": "See a doctor soon for confirmation tests. If you feel very thirsty, pass urine very often, feel very weak or confused, get medical help immediately."}}}}, "defaultInfo": {"ta": {"meaning": "இந்த மதிப்பு இயல்பு வரம்புக்கு வெளியே உள்ளது.", "reasons": "", "risk": "", "diet": "", "doctor": "இதுபற்றி மருத்துவரிடம் கேளுங்கள்."}, "en": {"meaning": "This value is outside the normal range.", "reasons": "", "risk": "", "diet": "", "doctor": "Please ask your doctor about this."}}, "names": {"ta": {"Hemoglobin": "ஹீமோகுளோபின்", "RBC Count": "சிவப்பணுக்கள் எண்ணிக்கை", "Hematocrit (PCV)": "ஹீமாடோகிரிட் (PCV)", "MCV": "MCV (சிவப்பணு அளவு)", "MCH": "MCH (சிவப்பணுவில் ஹீமோகுளோபின்)", "MCHC": "MCHC (ஹீமோகுளோபின் செறிவு)", "WBC Count": "வெள்ளையணுக்கள் எண்ணிக்கை", "Platelet Count": "இரத்தத் தட்டணுக்கள்", "Neutrophils": "நியூட்ரோஃபில்", "Lymphocytes": "லிம்போசைட்", "Monocytes": "மோனோசைட்", "Eosinophils": "ஈசினோஃபில்", "Basophils": "பேசோஃபில்", "Fasting Blood Sugar": "வெறும் வயிற்றுச் சர்க்கரை", "HbA1c": "HbA1c (3 மாதச் சர்க்கரை)", "Total Cholesterol": "மொத்த கொலஸ்ட்ரால்", "Triglycerides": "டிரைகிளிசரைடு", "HDL Cholesterol": "HDL கொலஸ்ட்ரால்", "LDL Cholesterol": "LDL கொலஸ்ட்ரால்", "Creatinine": "கிரியாட்டினின்", "Vitamin D": "வைட்டமின் D", "SGPT (ALT)": "SGPT (ALT) கல்லீரல் நொதி", "SGOT (AST)": "SGOT (AST) நொதி", "TSH": "தைராய்டு (TSH)", "Random Blood Sugar": "ரேண்டம் இரத்தச் சர்க்கரை", "Post Prandial Blood Sugar": "உணவுக்குப் பின் சர்க்கரை (PPBS)"}, "en": {"Hemoglobin": "Hemoglobin", "RBC Count": "Red blood cell count", "Hematocrit (PCV)": "Hematocrit (PCV)", "MCV": "MCV (red cell size)", "MCH": "MCH (hemoglobin per red cell)", "MCHC": "MCHC (hemoglobin concentration)", "WBC Count": "White blood cell count", "Platelet Count": "Platelet count", "Neutrophils": "Neutrophils", "Lymphocytes": "Lymphocytes", "Monocytes": "Monocytes", "Eosinophils": "Eosinophils", "Basophils": "Basophils", "Fasting Blood Sugar": "Fasting blood sugar", "HbA1c": "HbA1c (3-month sugar)", "Total Cholesterol": "Total cholesterol", "Triglycerides": "Triglycerides", "HDL Cholesterol": "HDL cholesterol (good)", "LDL Cholesterol": "LDL cholesterol (bad)", "Creatinine": "Creatinine (kidney)", "Vitamin D": "Vitamin D", "SGPT (ALT)": "SGPT / ALT (liver enzyme)", "SGOT (AST)": "SGOT / AST (enzyme)", "TSH": "TSH (thyroid)", "Random Blood Sugar": "Random blood sugar", "Post Prandial Blood Sugar": "Post-meal blood sugar (PPBS)"}}, "ui": {"ta": {"title": "🩺 ஆய்வக அறிக்கை விளக்கி", "sub": "உங்கள் இரத்தப் பரிசோதனை அறிக்கையைப் (PDF அல்லது புகைப்படம்) பதிவேற்றுங்கள். ஒவ்வொரு மதிப்பும் இயல்பு வரம்புடன் ஒப்பிடப்பட்டு, எளிய தமிழில் விளக்கப்படும்.", "disclaimer": "இது மருத்துவ ஆலோசனை அல்ல. நோயைக் கண்டறிவதோ சிகிச்சை அளிப்பதோ இந்த செயலியின் வேலை அல்ல. சந்தேகம் இருந்தால் மருத்துவரை அணுகவும். நெஞ்சு வலி, மூச்சுத்திணறல், மயக்கம் போன்ற அவசர நிலையில் உடனே மருத்துவ உதவி பெறவும்.", "scope": "இந்த செயலி ஆய்வகத்தில் (lab) இருந்து பெற்ற இரத்தப் பரிசோதனை அறிக்கைகளுக்கு மட்டும். மதிப்புகளுக்கு அருகில் இயல்பு வரம்பு (reference range) அச்சிடப்பட்டிருக்க வேண்டும். மருத்துவமனை டிஸ்சார்ஜ் சம்மரி, மருந்துச் சீட்டு போன்றவற்றைப் படிக்காது. உங்கள் அறிக்கையில் பெயர், தொலைபேசி எண் இருந்தால் அவற்றை நீக்கிவிட்டுப் பதிவேற்றுவது நல்லது. புகைப்படம் எடுத்தால் நல்ல வெளிச்சத்தில், நேராக, தெளிவாக எடுக்கவும்.", "uploader": "அறிக்கையைப் பதிவேற்றுங்கள் (PDF அல்லது புகைப்படம்)", "spinner": "அறிக்கையைப் படிக்கிறோம்...", "read_error": "கோப்பைப் படிக்க முடியவில்லை. தெளிவான PDF அல்லது புகைப்படத்தை முயற்சிக்கவும்.", "tech_err": "தொழில்நுட்பப் பிழை: {e}", "ocr_warn": "புகைப்படத்திலிருந்து எழுத்துகள் படிக்கப்பட்டுள்ளன, அதனால் சில எண்கள் தவறாக இருக்கலாம். சில பரிசோதனைகள் படிக்கப்படாமலும் போகலாம். கீழே உள்ள மதிப்புகளை உங்கள் அசல் அறிக்கையுடன் சரிபார்க்கவும்.", "discharge": "இது மருத்துவமனை டிஸ்சார்ஜ் சம்மரி போலத் தெரிகிறது. இந்த செயலி ஆய்வக இரத்தப் பரிசோதனை அறிக்கைகளை மட்டுமே விளக்கும். இந்த ஆவணத்தில் மதிப்புகளுக்கு இயல்பு வரம்பு இல்லாததால் அவற்றை நாங்கள் ஊகித்துச் சொல்ல மாட்டோம். ஆய்வகத்தில் இருந்து பெற்ற பரிசோதனை அறிக்கையைப் பதிவேற்றவும். இந்த ஆவணத்தை உங்கள் மருத்துவரிடம் கேட்டுப் புரிந்துகொள்ளவும்.", "empty": "இந்த அறிக்கையில் பரிசோதனை மதிப்புகளைப் படிக்க முடியவில்லை. தெளிவான புகைப்படம் அல்லது டிஜிட்டல் PDF-ஐ முயற்சிக்கவும்.", "unknown": "இந்த அறிக்கையில் உள்ள இந்தப் பரிசோதனைகளை இந்த செயலியால் விளக்க முடியவில்லை: {names}. இவற்றுக்கு அசல் அறிக்கையைப் பார்த்து மருத்துவரிடம் கேளுங்கள்.", "doubtful": "இந்த மதிப்புகளைச் சரியாகப் படிக்க முடியவில்லை, அதனால் அவற்றை விட்டுவிட்டோம்: {names}. அசல் அறிக்கையைப் பார்க்கவும்.", "c_total": "மொத்தம்", "c_ok": "இயல்பு", "c_low": "குறைவு", "c_high": "அதிகம்", "th_test": "பரிசோதனை", "th_value": "உங்கள் மதிப்பு", "th_range": "இயல்பு வரம்பு", "th_status": "நிலை", "b_low": "↓ குறைவு", "b_high": "↑ அதிகம்", "b_ok": "✓ இயல்பு", "legend": "பச்சைப் பகுதி = இயல்பு வரம்பு. புள்ளி = உங்கள் மதிப்பு.", "caption": "அறிக்கையில் வயது வாரியான வரம்புகள் இருந்தால் 18 வயதுக்கு மேற்பட்டவர்களுக்கான வரம்பு எடுக்கப்படும். மதிப்பும் வரம்பும் வெவ்வேறு அலகுகளில் (ஆயிரம் / லட்சம்) இருந்தால் ஒரே அலகாக மாற்றிக் காட்டப்படும்.", "ex_title": "விளக்கங்கள்", "ex_caption": "இயல்பாக இல்லாத மதிப்புகளுக்கு மட்டும். தட்டினால் விரியும்.", "s_meaning": "பொருள்", "s_reasons": "சாத்தியமான காரணங்கள்", "s_risk": "ஆபத்துக் காரணிகள்", "s_diet": "உணவு / வாழ்க்கை முறை", "s_doctor": "மருத்துவரை எப்போது அணுகவும்", "tips": "பொதுவான குறிப்புகள்: தினமும் 30 நிமிடம் நடைப்பயிற்சி, போதுமான தண்ணீர், 7-8 மணி நேர உறக்கம், சரிவிகித உணவு. இயல்பாக இல்லாத மதிப்புகளுடன் உங்கள் மருத்துவரைச் சந்திக்கவும்.", "all_ok": "படிக்கப்பட்ட எல்லா மதிப்புகளும் இயல்பு வரம்புக்குள் உள்ளன. இருந்தாலும் அறிகுறிகள் இருந்தால் மருத்துவரைச் சந்திக்கவும்.", "text_exp": "படிக்கப்பட்ட உரை (சரிபார்க்க)", "not_stored": "உங்கள் அறிக்கை உங்கள் உலாவியில் மட்டுமே செயலாக்கப்படுகிறது. எங்கும் பதிவேற்றப்படாது, சேமிக்கப்படாது.", "anim": "✨ அனிமேஷன்", "choose": "அறிக்கையைத் தேர்ந்தெடுக்கவும் (PDF / புகைப்படம்)", "drop": "அல்லது இங்கே இழுத்து விடவும்", "p_tools": "படிக்கும் கருவிகளை ஏற்றுகிறோம்...", "p_pdf": "PDF-ஐப் படிக்கிறோம்...", "p_prep": "படத்தைத் தயார் செய்கிறோம்...", "p_ocr": "புகைப்படத்திலிருந்து எழுத்துகளைப் படிக்கிறோம் ({n}/{m})...", "p_analyze": "மதிப்புகளை ஆராய்கிறோம்...", "net_error": "படிக்கும் கருவிகளை ஏற்ற முடியவில்லை. இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.", "again": "மற்றொரு அறிக்கையைச் சரிபார்க்கவும்", "first_note": "முதல் முறை புகைப்படம் படிக்கும்போது கருவிகள் பதிவிறக்கமாகும் (சுமார் 15 MB), அதனால் ஒரு நிமிடம் ஆகலாம்.", "footer": "கல்வி மற்றும் விழிப்புணர்வுக்காக மட்டும். மருத்துவ ஆலோசனை அல்ல.", "lang": "மொழி", "f_all": "அனைத்தும்", "f_abn": "இயல்பற்றவை", "range_lbl": "இயல்பு வரம்பு", "detail": "விளக்கம்", "hide": "மூடு", "tests": "சோதனைகள்", "title_tab": "ஆய்வக அறிக்கை விளக்கி", "install": "ஆப்பாக நிறுவு", "prescription": "இது மருந்துச் சீட்டு (prescription) போலத் தெரிகிறது. இந்த செயலி ஆய்வக இரத்தப் பரிசோதனை அறிக்கைகளை மட்டுமே விளக்கும். மருந்துகள், அளவுகள் பற்றி உங்கள் மருத்துவர் அல்லது மருந்தாளரிடம் கேளுங்கள். ஆய்வகப் பரிசோதனை அறிக்கையைப் பதிவேற்றவும்.", "v_btn": "குரல் உதவி", "v_title": "குரல் உதவி வேண்டுமா?", "v_text": "உங்கள் அறிக்கை முடிவுகளை நான் தமிழில் படித்துச் சொல்கிறேன். படிக்க சிரமம் இருந்தால் இது உதவும்.", "v_yes": "ஆம், பேசு 🔊", "v_no": "வேண்டாம்", "v_greet": "வணக்கம்! நான் தெளிவு. உங்கள் இரத்தப் பரிசோதனை அறிக்கையைப் பதிவேற்றுங்கள். முடிவுகளை நான் படித்துச் சொல்கிறேன்.", "v_on_title": "🔊 குரல் உதவி இயக்கத்தில் உள்ளது", "v_hear": "வணக்கம் கேள்", "v_turnoff": "குரலை அணை", "v_readall": "எல்லாவற்றையும் படி", "v_stop": "நிறுத்து", "v_speed": "வேகம்", "v_read_this": "🔊 இதைப் படி", "v_novoice": "உங்கள் போனில் தமிழ் குரல் இல்லை என்று தெரிகிறது. சத்தம் வரவில்லை என்றால் போனின் Settings-ல் Text-to-speech (Google) சென்று தமிழ் குரலை நிறுவவும்.", "v_sum": "மொத்தம் {n} பரிசோதனைகள் படிக்கப்பட்டன. {ok} இயல்பு, {low} குறைவு, {high} அதிகம்.", "v_abn_list": "இயல்பாக இல்லாதவை: {list}.", "v_all_ok": "எல்லா மதிப்புகளும் இயல்பு வரம்புக்குள் உள்ளன.", "v_more": "முழு விளக்கம் கேட்க, எல்லாவற்றையும் படி என்ற பொத்தானைத் தட்டுங்கள்.", "v_disc": "இது மருத்துவ ஆலோசனை அல்ல. சந்தேகம் இருந்தால் மருத்துவரை அணுகவும்.", "v_item": "{name}. உங்கள் மதிப்பு {value} {unit}. இயல்பு வரம்பு {range}. நிலை: {status}.", "v_range": "{lo} முதல் {hi} வரை", "v_below": "{hi}-க்கு குறைவாக", "v_above": "{lo}-க்கு மேல்"}, "en": {"title": "🩺 Lab Report Explainer", "sub": "Upload your blood test report (PDF or photo). Every value is compared with the report's own reference range and explained in simple English.", "disclaimer": "This is not medical advice. This app does not diagnose or treat any condition. If in doubt, please see a doctor. In an emergency such as chest pain, breathlessness or fainting, get medical help immediately.", "scope": "This app is only for blood test reports issued by a lab, where the reference range is printed next to each value. It does not read hospital discharge summaries or prescriptions. If your report has your name or phone number, it is best to remove them before uploading. If you take a photo, use good light and keep the report straight and clear.", "uploader": "Upload your report (PDF or photo)", "spinner": "Reading your report...", "read_error": "Could not read the file. Please try a clear PDF or photo.", "tech_err": "Technical error: {e}", "ocr_warn": "Text was read from a photo, so some numbers may be wrong, and some tests may be missed. Please check the values below against your original report.", "discharge": "This looks like a hospital discharge summary. This app only explains lab blood test reports. This document has no reference ranges for its values, so we will not guess. Please upload a lab test report, and ask your doctor to explain this document.", "empty": "Could not read any test values from this report. Please try a clear photo or a digital PDF.", "unknown": "This app could not explain these tests in your report: {names}. Please check the original report and ask your doctor.", "doubtful": "These values could not be read reliably, so we left them out: {names}. Please check the original report.", "c_total": "Total", "c_ok": "Normal", "c_low": "Low", "c_high": "High", "th_test": "Test", "th_value": "Your value", "th_range": "Normal range", "th_status": "Status", "b_low": "↓ Low", "b_high": "↑ High", "b_ok": "✓ Normal", "legend": "Green area = normal range. Dot = your value.", "caption": "If the report has age-wise ranges, the range for people above 18 is used. If the value and range are printed in different units (thousands / lakhs), they are converted to one unit.", "ex_title": "Explanations", "ex_caption": "Only for values outside the normal range. Tap to expand.", "s_meaning": "Meaning", "s_reasons": "Possible reasons", "s_risk": "Risk factors", "s_diet": "Diet / lifestyle", "s_doctor": "When to see a doctor", "tips": "General tips: walk 30 minutes daily, drink enough water, sleep 7-8 hours and eat a balanced diet. Please discuss any abnormal values with your doctor.", "all_ok": "All the values we could read are within the normal range. Still, see a doctor if you have symptoms.", "text_exp": "Text read from the report (to verify)", "not_stored": "Your report is processed only in your browser. It is not uploaded or saved anywhere.", "anim": "✨ Animation", "choose": "Choose report (PDF / photo)", "drop": "or drop it here", "p_tools": "Loading the reading tools...", "p_pdf": "Reading the PDF...", "p_prep": "Preparing the image...", "p_ocr": "Reading text from the photo ({n}/{m})...", "p_analyze": "Analysing the values...", "net_error": "Could not load the reading tools. Please check your internet connection and try again.", "again": "Check another report", "first_note": "The first time you scan a photo, the reading tools download (about 15 MB), so it can take a minute.", "footer": "For education and awareness only. Not medical advice.", "lang": "Language", "f_all": "All", "f_abn": "Abnormal", "range_lbl": "Normal range", "detail": "Details", "hide": "Hide", "tests": "tests", "title_tab": "Lab Report Explainer", "install": "Install app", "prescription": "This looks like a prescription. This app only explains laboratory blood test reports. Please ask your doctor or pharmacist about the medicines and doses. Upload the lab test report instead.", "v_btn": "Voice help", "v_title": "Would you like voice help?", "v_text": "I can read your report results aloud for you. This helps if reading is difficult.", "v_yes": "Yes, speak 🔊", "v_no": "No, thanks", "v_greet": "Hello! I am Thelivu. Upload your blood test report and I will read the results aloud for you.", "v_on_title": "🔊 Voice help is on", "v_hear": "Hear greeting", "v_turnoff": "Turn off voice", "v_readall": "Read everything", "v_stop": "Stop", "v_speed": "Speed", "v_read_this": "🔊 Read this", "v_novoice": "No voice for this language was found on your phone. If you hear nothing, open Settings > Text-to-speech (Google) and install the voice.", "v_sum": "{n} tests were read. {ok} normal, {low} low, {high} high.", "v_abn_list": "Outside the normal range: {list}.", "v_all_ok": "All values are within the normal range.", "v_more": "For the full explanation, tap Read everything.", "v_disc": "This is not medical advice. If in doubt, please see a doctor.", "v_item": "{name}. Your value is {value} {unit}. Normal range {range}. Status: {status}.", "v_range": "{lo} to {hi}", "v_below": "below {hi}", "v_above": "above {lo}"}}};
+const BRAND = 'Thelivu';
+
+/* =====================================================================
+   1. Report parser (port of the Python version)
+   ===================================================================== */
+const NUM = '\\d+(?:\\.\\d+)?';
+const RANGE = new RegExp(`(${NUM})\\s*(?:-|–|—|to)\\s*(${NUM})`, 'i');
+const BELOW = new RegExp(`(?:below|less than|up to|upto|<)\\s*=?\\s*(${NUM})`, 'i');
+const ABOVE = new RegExp(`(?:above|greater than|more than|>)\\s*=?\\s*(${NUM})`, 'i');
+const AGE_G = /\d+\s*-\s*\d+\s*(?:yrs?|years?)\b\s*:?|(?:>|above|over)\s*\d+\s*(?:yrs?|years?)\b\s*:?/gi;
+const ADULT = /(?:>|above|over)\s*18\s*(?:yrs?|years?)|adults?\b/i;
+const AGE_WORD = /yrs?|vrs|years?/i;
+const ALIASES = D.aliases.map(([k, p]) => [k, new RegExp(p, 'i')]);
+const DIFF = new Set(['Neutrophils', 'Lymphocytes', 'Monocytes', 'Eosinophils', 'Basophils']);
+const MGDL = new Set(['Fasting Blood Sugar', 'Random Blood Sugar', 'Post Prandial Blood Sugar', 'Total Cholesterol', 'Triglycerides', 'HDL Cholesterol', 'LDL Cholesterol', 'Creatinine']);
+const LIPID = new Set(['Total Cholesterol', 'Triglycerides', 'HDL Cholesterol', 'LDL Cholesterol']);
+const round = (x, n) => { const f = Math.pow(10, n); return Math.round((x + Number.EPSILON) * f) / f; };
+
+function fit(key, value, lo, hi) {
+  if (lo >= hi || !(key in D.typical)) return null;
+  const [[l1, l2], [h1, h2]] = D.typical[key];
+  const [v1, v2] = D.limits[key];
+  for (const fr of [1, 1000, 100000]) {
+    if (!(l1 <= lo * fr && lo * fr <= l2 && h1 <= hi * fr && hi * fr <= h2)) continue;
+    for (const fv of [1, 1000, 100000]) {
+      let ok;
+      if (fv === 1) ok = v1 <= value && value <= v2;
+      else { const b = D.scaleBounds[key]; ok = !!b && b[0] <= value * fv && value * fv <= b[1]; }
+      if (ok) return round(value * fv / fr, 4);
+    }
+  }
+  return null;
+}
+const cleanLine = l => l.replace(/\|/g, ' ')
+  .replace(/\d{1,3}(?:,\d{2})*,\d{3}(?!\d)/g, m => m.replace(/,/g, ''))
+  .replace(/(?<=\d),(?=\d{1,2}(?!\d))/g, '.');
+function findRange(after) {
+  const found = [];
+  let m = RANGE.exec(after); if (m) found.push([m.index, parseFloat(m[1]), parseFloat(m[2])]);
+  m = BELOW.exec(after); if (m) found.push([m.index, 0, parseFloat(m[1])]);
+  m = ABOVE.exec(after); if (m) found.push([m.index, parseFloat(m[1]), 1000000]);
+  if (!found.length) return null;
+  found.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);
+  return [found[0][1], found[0][2]];
+}
+function adultRange(line) {
+  line = cleanLine(line);
+  const m = ADULT.exec(line);
+  return m ? findRange(line.slice(m.index + m[0].length)) : null;
+}
+function parseLine(line) {
+  line = cleanLine(line);
+  const low = line.toLowerCase();
+  for (const [key, re] of ALIASES) {
+    const m = re.exec(line);
+    if (!m) continue;
+    if (LIPID.has(key) && /ratio|\bnon\b|non-|vldl/.test(low)) continue;
+    if (key === 'Total Cholesterol' && /hdl|ldl/.test(low)) continue;
+    if (DIFF.has(key) && low.includes('absolute')) continue;
+    if (key === 'Hemoglobin' && /a1c|glyc|mean cell|corpuscular|\bmch|methem|carboxy/.test(low)) continue;
+    if (key === 'Creatinine' && /clearance|ratio|urine/.test(low)) continue;
+    const rest = line.slice(m.index + m[0].length).replace(/^\s*\([^)]*\)/, '');
+    const vm = new RegExp(NUM).exec(rest);
+    if (!vm) return null;
+    const value = parseFloat(vm[0]);
+    const after = rest.slice(vm.index + vm[0].length);
+    const rng = findRange(after.replace(AGE_G, ' '));
+    if (!rng) return null;
+    const tokens = after.trim().split(/\s+/).filter(Boolean);
+    let unit = (tokens.length && !/^[\d<>.,\-–]+$|^(h|l|high|low|below|above)$/i.test(tokens[0])) ? tokens[0] : '';
+    if (unit.toLowerCase().startsWith('millio')) unit = 'million/cumm';
+    else if (unit.startsWith('%')) unit = '%';
+    if (MGDL.has(key) && /^mg\/(?:dl|di|d1|l|fil|dI)$/i.test(unit)) unit = 'mg/dL';
+    return { key, value, unit, lo: rng[0], hi: rng[1] };
+  }
+  return null;
+}
+function unknownTestName(line) {
+  line = cleanLine(line);
+  const m = /\d/.exec(line);
+  if (!m || /\d{1,2}[-/]\d{1,2}[-/]\d{2,4}/.test(line) || AGE_WORD.test(line)) return null;
+  if (/\b(tab|tablet|syp|cap|inj|oint\w*|days?|bpm|mmhg)\b/i.test(line)) return null;
+  if (ALIASES.some(([, re]) => re.test(line))) return null;
+  const after = line.slice(m.index);
+  if (!(RANGE.test(after) || BELOW.test(after) || ABOVE.test(after))) return null;
+  let name = line.slice(0, m.index).replace(/[^A-Za-z() ,./\-]/g, ' ');
+  name = name.trim().replace(/\s+[HL]\s*$/, '');
+  name = name.replace(/\s+/g, ' ').replace(/^[ ,.:\-/]+|[ ,.:\-/]+$/g, '');
+  if ((name.match(/[A-Za-z]/g) || []).length < 4) return null;
+  return name.slice(0, 40);
+}
+function looksLikeDischarge(text) {
+  const low = text.toLowerCase();
+  const marks = ['discharge summary', 'diagnosis on discharge', 'discharge advice', 'clinical summary',
+                 'condition on discharge', 'follow up', 'history of illness'];
+  return marks.filter(m => low.includes(m)).length >= 2;
+}
+function looksLikePrescription(text) {
+  const meds = (text.match(/^\W*\d*\)?\s*(?:tab|tabs|tablet|cap|caps|capsule|syp|syrup|inj|oint\w*)\b/gim) || []).length;
+  const dose = (text.match(/\b[01]\s*[-—–]+\s*[01]\s*[-—–]+\s*[01]\b/g) || []).length;
+  return meds >= 2 || dose >= 2 || (meds >= 1 && dose >= 1);
+}
+function repair(key, value, lo, hi) {
+  let v = fit(key, value, lo, hi);
+  if (v !== null) return [v, lo, hi];
+  for (const [fl, fh] of [[0.1, 0.1], [1, 0.1], [0.1, 1]]) {
+    if ((fl !== 1 && !(Number.isInteger(lo) && lo >= 10)) || (fh !== 1 && !(Number.isInteger(hi) && hi >= 10))) continue;
+    for (const fv of [1, 0.1]) {
+      if (fv !== 1 && !(Number.isInteger(value) && value >= 10)) continue;
+      v = fit(key, value * fv, lo * fl, hi * fh);
+      if (v !== null) return [v, round(lo * fl, 2), round(hi * fh, 2)];
+    }
+  }
+  return null;
+}
+function analyzeText(text) {
+  const lines = text.split('\n');
+  const best = new Map(); const doubtful = []; const unknown = [];
+  lines.forEach((line, i) => {
+    const res = parseLine(line);
+    if (!res) {
+      const name = unknownTestName(line);
+      if (name && !unknown.some(u => u.toLowerCase() === name.toLowerCase())) unknown.push(name);
+      return;
+    }
+    let { key, value, unit, lo, hi } = res;
+    let adult = false;
+    if (AGE_WORD.test(line)) {
+      for (const nxt of lines.slice(i + 1, i + 4)) {
+        if (parseLine(nxt)) break;
+        const ar = adultRange(nxt);
+        if (ar) { [lo, hi] = ar; adult = true; break; }
+      }
+    }
+    if (best.has(key) && (best.get(key).adult || !adult)) return;
+    const fixed = repair(key, value, lo, hi);
+    if (!fixed) { doubtful.push(key); return; }
+    best.set(key, { adult, row: { test: key, value: fixed[0], unit, low: fixed[1], high: fixed[2] } });
+  });
+  const rows = [...best.values()].map(v => {
+    const r = v.row;
+    r.status = r.value < r.low ? 'LOW' : (r.value > r.high ? 'HIGH' : 'NORMAL');
+    return r;
+  });
+  const dbt = [...new Set(doubtful)].filter(k => !best.has(k)).sort();
+  return { rows, doubtful: dbt, unknown: unknown.slice(0, 10) };
+}
+
+/* =====================================================================
+   2. Reading files in the browser (pdf.js text, Tesseract.js OCR)
+   ===================================================================== */
+const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const TESS = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+const loaded = {};
+function loadScript(url) {
+  if (loaded[url]) return loaded[url];
+  return loaded[url] = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = url; s.async = true; s.crossOrigin = 'anonymous'; s.onload = res;
+    s.onerror = () => { delete loaded[url]; rej(new Error('NET')); };
+    document.head.appendChild(s);
+  });
+}
+function itemsToLines(items) {
+  const its = items.filter(i => i.s && i.s.trim()).map(i => ({ ...i }));
+  its.sort((a, b) => b.y - a.y || a.x - b.x);
+  const lines = [];
+  for (const it of its) {
+    const tol = Math.max(2, (it.h || 8) * 0.5);
+    const last = lines[lines.length - 1];
+    if (last && Math.abs(last.y - it.y) <= tol) last.items.push(it);
+    else lines.push({ y: it.y, items: [it] });
+  }
+  return lines.map(L => {
+    L.items.sort((a, b) => a.x - b.x);
+    let s = '', prevEnd = null;
+    for (const it of L.items) {
+      if (prevEnd !== null) s += (it.x - prevEnd > Math.max(1, (it.h || 8) * 0.12)) ? ' ' : '';
+      s += it.s.trim();
+      prevEnd = it.x + it.w;
+    }
+    return s.replace(/\s+/g, ' ').trim();
+  }).filter(Boolean);
+}
+function preprocess(src) {
+  const sw = src.width, sh = src.height;
+  let f = sw < 2400 ? 2400 / sw : 1;
+  if (Math.max(sw * f, sh * f) > 4200) f = 4200 / Math.max(sw, sh);
+  const w = Math.round(sw * f), h = Math.round(sh * f);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d', { willReadFrequently: true });
+  x.imageSmoothingQuality = 'high';
+  x.drawImage(src, 0, 0, w, h);
+  const id = x.getImageData(0, 0, w, h), d = id.data;
+  let mn = 255, mx = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    const g = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000 | 0;
+    d[i] = g; if (g < mn) mn = g; if (g > mx) mx = g;
+  }
+  const span = Math.max(1, mx - mn);
+  for (let i = 0; i < d.length; i += 4) {
+    const g = Math.max(0, Math.min(255, ((d[i] - mn) * 255 / span) | 0));
+    d[i] = d[i + 1] = d[i + 2] = g; d[i + 3] = 255;
+  }
+  x.putImageData(id, 0, 0);
+  return c;
+}
+async function ocrCanvases(canvases, progress) {
+  progress('p_tools');
+  await loadScript(TESS);
+  const total = canvases.length * 2; let done = 0, cur = 0;
+  const worker = await Tesseract.createWorker('eng', 1, {
+    logger: m => { if (m.status === 'recognizing text') progress('p_ocr', { n: Math.min(done + 1, total), m: total }, (done + m.progress) / total); }
+  });
+  let text = '';
+  try {
+    for (const c of canvases) {
+      for (const psm of ['6', '4']) {
+        await worker.setParameters({ tessedit_pageseg_mode: psm });
+        progress('p_ocr', { n: ++cur, m: total }, done / total);
+        const r = await worker.recognize(c);
+        text += r.data.text + '\n'; done++;
+      }
+    }
+  } finally { await worker.terminate(); }
+  return text;
+}
+async function readFile(file, progress) {
+  const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+  if (isPdf) {
+    progress('p_tools'); await loadScript(PDFJS);
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+    progress('p_pdf');
+    const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+    let text = '';
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n);
+      const tc = await page.getTextContent();
+      const items = tc.items.map(i => ({ s: i.str, x: i.transform[4], y: i.transform[5], w: i.width, h: i.height || Math.abs(i.transform[3]) }));
+      text += itemsToLines(items).join('\n') + '\n';
+    }
+    if (text.trim().length >= 30) return { text, source: 'pdf' };
+    const canvases = [];
+    for (let n = 1; n <= Math.min(3, pdf.numPages); n++) {
+      progress('p_prep');
+      const page = await pdf.getPage(n);
+      let vp = page.getViewport({ scale: 2.8 });
+      if (Math.max(vp.width, vp.height) > 4200) vp = page.getViewport({ scale: 2.8 * 4200 / Math.max(vp.width, vp.height) });
+      const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+      await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+      canvases.push(preprocess(c));
+    }
+    return { text: await ocrCanvases(canvases, progress), source: 'ocr' };
+  }
+  progress('p_prep');
+  let bmp;
+  try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+  catch (e) { bmp = await createImageBitmap(file); }
+  const c = preprocess(bmp); if (bmp.close) bmp.close();
+  return { text: await ocrCanvases([c], progress), source: 'ocr' };
+}
+
+/* =====================================================================
+   3. UI
+   ===================================================================== */
+const S = { lang: 'ta', anim: true, result: null, filter: 'all' };
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const L = () => D.ui[S.lang];
+const fill = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => v[k] != null ? v[k] : '');
+const fmt = x => String(Number(Number(x).toPrecision(6)));
+const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function applyText() {
+  document.documentElement.lang = S.lang;
+  document.title = 'Lab Report Explainer · ' + BRAND;
+  document.querySelectorAll('[data-i]').forEach(e => { let v = L()[e.dataset.i]; if (v == null) return; if (e.dataset.i === 'title') v = v.replace(/^\p{Extended_Pictographic}\uFE0F?\s*/u, ''); e.textContent = v; });
+  document.querySelectorAll('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === S.lang)));
+  $('#chooseBtn').textContent = S.result ? L().again : L().choose;
+  renderVoiceCard();
+}
+function setAnim(on) {
+  S.anim = on; document.body.classList.toggle('noanim', !on);
+  $('#animSw').setAttribute('aria-checked', String(on)); store.set('lr_anim', on ? '1' : '0');
+}
+function setLang(lang) {
+  stopSpeech(); S.lang = lang; store.set('lr_lang', lang); applyText();
+  if (S.result) render(false);
+}
+
+/* ---- progress ---- */
+function showProgress(key, vars, frac) {
+  $('#prog').hidden = false;
+  $('#progLbl').textContent = fill(L()[key] || key, vars || {});
+  $('#progBar').style.setProperty('--p', Math.round(Math.max(0.06, Math.min(1, frac == null ? 0.12 : frac)) * 100) + '%');
+}
+const hideProgress = () => { $('#prog').hidden = true; };
+
+/* ---- helpers for results ---- */
+function countUp(node, orig, dur = 900) {
+  if (!S.anim) { node.textContent = orig; return; }
+  const target = parseFloat(orig); if (!isFinite(target)) { node.textContent = orig; return; }
+  const dec = (orig.split('.')[1] || '').length; const t0 = performance.now();
+  const step = now => {
+    const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    if (p < 1) { node.textContent = (target * e).toFixed(dec); requestAnimationFrame(step); } else node.textContent = orig;
+  };
+  node.textContent = (0).toFixed(dec); requestAnimationFrame(step);
+}
+function barGeom(r) {
+  const lo = r.low, hi = r.high, v = r.value;
+  let mn, mx, end;
+  if (hi >= 1000000) { mn = lo * 0.6; mx = Math.max(v * 1.15, lo * 1.6); end = null; }
+  else {
+    const span = hi - lo;
+    mn = lo === 0 ? 0 : lo - span * 0.5; mx = hi + span * 0.5;
+    mn = Math.min(mn, v - span * 0.1); mx = Math.max(mx, v + span * 0.1); end = hi;
+  }
+  const rng = (mx - mn) || 1;
+  const pos = x => Math.max(0, Math.min(100, (x - mn) / rng * 100));
+  const left = pos(lo), width = end === null ? 100 - left : pos(end) - left;
+  return { left, width, mark: pos(v) };
+}
+const rangeText = r => r.high >= 1000000 ? '≥ ' + fmt(r.low) : (r.low === 0 ? '< ' + fmt(r.high) : fmt(r.low) + ' – ' + fmt(r.high));
+const CLS = { LOW: 'low', HIGH: 'high', NORMAL: 'ok' };
+
+function ring(counts, intro) {
+  const C = 2 * Math.PI * 48, total = counts.ok + counts.low + counts.high;
+  const wrap = el('div', 'ring');
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 120 120');
+  const mk = (cls, color) => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', 60); c.setAttribute('cy', 60); c.setAttribute('r', 48); if (cls) c.setAttribute('class', cls); if (color) c.style.stroke = color; return c; };
+  svg.appendChild(mk('track'));
+  const segs = []; let off = 0; const gap = [counts.ok, counts.low, counts.high].filter(Boolean).length > 1 ? 5 : 0;
+  [['ok', counts.ok, 'var(--ok)'], ['low', counts.low, 'var(--low)'], ['high', counts.high, 'var(--high)']].forEach(([k, n, col]) => {
+    if (!n) return;
+    const len = Math.max(0.1, n / total * C - gap);
+    const c = mk('seg', col); c.style.strokeDashoffset = String(-off);
+    c.style.strokeDasharray = intro && S.anim ? `0 ${C}` : `${len} ${C - len}`;
+    svg.appendChild(c); segs.push([c, len]); off += n / total * C;
+  });
+  wrap.appendChild(svg);
+  const mid = el('div', 'mid'); const b = el('b', null, String(total)); mid.append(b, el('span', null, L().tests));
+  wrap.appendChild(mid);
+  if (intro && S.anim) {
+    countUp(b, String(total), 1000);
+    requestAnimationFrame(() => requestAnimationFrame(() => segs.forEach(([c, len]) => { c.style.strokeDasharray = `${len} ${C - len}`; })));
+  }
+  return wrap;
+}
+
+function detailBody(r) {
+  const info = (D.info[S.lang][r.test] || {})[r.status] || D.defaultInfo[S.lang];
+  const wrap = el('div', 'exin');
+  if (TTS) { const rb = el('button', 'readbtn', L().v_read_this); rb.type = 'button'; rb.addEventListener('click', e => { e.stopPropagation(); speak(itemText(r) + ' ' + explainText(r)); }); wrap.appendChild(rb); }
+  [['meaning', 's_meaning'], ['reasons', 's_reasons'], ['risk', 's_risk'], ['diet', 's_diet'], ['doctor', 's_doctor']].forEach(([f, lbl]) => {
+    if (!info[f]) return;
+    const p = el('p'); p.append(el('b', null, L()[lbl]), document.createTextNode(info[f])); wrap.appendChild(p);
+  });
+  return wrap;
+}
+function toggleRow(row) {
+  const body = $('.exbody', row), open = row.classList.toggle('open');
+  row.setAttribute('aria-expanded', String(open));
+  if (open) { body.style.height = body.scrollHeight + 'px'; }
+  else { body.style.height = body.scrollHeight + 'px'; requestAnimationFrame(() => { body.style.height = '0px'; }); }
+}
+
+function rowEl(r, intro) {
+  const cls = CLS[r.status], g = barGeom(r);
+  const abn = r.status !== 'NORMAL';
+  const row = el('div', 'row ' + cls + (abn ? ' abn' : ''));
+  row.dataset.status = r.status;
+  const name = D.names[S.lang][r.test] || r.test;
+  const nm = el('div', 'nm', name); if (S.lang === 'ta' && name !== r.test) nm.appendChild(el('small', null, r.test));
+  const num = el('b', null, fmt(r.value)); const val = el('div', 'val'); val.append(num, el('small', null, r.unit || ''));
+  const r1 = el('div', 'r1'); r1.append(nm, val);
+  const rg = el('span', null, L().range_lbl + ': ' + rangeText(r));
+  const lab = { LOW: L().b_low, HIGH: L().b_high, NORMAL: L().b_ok }[r.status];
+  const r2 = el('div', 'r2'); r2.append(rg, el('span', 'bd ' + cls, lab));
+  const bar = el('div', 'bar'); const zone = el('div', 'zone'); const mk = el('div', 'mk ' + cls);
+  bar.append(zone, mk);
+  row.append(r1, r2, bar);
+  const animate = intro && S.anim;
+  zone.style.left = g.left + '%';
+  if (animate) { zone.style.width = '0%'; mk.style.left = '0%'; } else { zone.style.width = g.width + '%'; mk.style.left = g.mark + '%'; }
+  row._reveal = () => {
+    row.classList.add('in');
+    if (animate) {
+      requestAnimationFrame(() => { zone.style.width = g.width + '%'; mk.style.left = g.mark + '%'; });
+      countUp(num, fmt(r.value), 900);
+      if (abn) mk.classList.add('pulse');
+    }
+  };
+  if (abn) {
+    const more = el('div', 'more'); more.append(el('span', 'chev', '▸'), document.createTextNode(L().detail));
+    const body = el('div', 'exbody'); body.appendChild(detailBody(r));
+    row.append(more, body);
+    row.setAttribute('role', 'button'); row.tabIndex = 0; row.setAttribute('aria-expanded', 'false');
+    row.addEventListener('click', () => toggleRow(row));
+    row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRow(row); } });
+  }
+  return row;
+}
+const note = (kind, text) => el('div', 'note ' + kind, text);
+
+function render(intro) {
+  const out = $('#out'); out.replaceChildren(); out.hidden = false;
+  const R = S.result, l = L();
+  out.classList.toggle('intro', !!intro);
+  $('#drop').classList.add('compact');
+  if (R.source === 'ocr') out.appendChild(note('warn', l.ocr_warn));
+  if (!R.rows.length) {
+    out.appendChild(note('err', R.discharge ? l.discharge : (R.prescription ? l.prescription : l.empty)));
+    if (R.unknown.length) out.appendChild(note('warn', fill(l.unknown, { names: R.unknown.join(', ') })));
+    if (R.doubtful.length) out.appendChild(note('warn', fill(l.doubtful, { names: R.doubtful.join(', ') })));
+    return;
+  }
+  if (R.unknown.length) out.appendChild(note('warn', fill(l.unknown, { names: R.unknown.join(', ') })));
+  if (R.doubtful.length) out.appendChild(note('warn', fill(l.doubtful, { names: R.doubtful.join(', ') })));
+
+  const counts = { ok: 0, low: 0, high: 0 };
+  R.rows.forEach(r => counts[CLS[r.status]]++);
+  const panel = el('div', 'panel'); const sum = el('div', 'sum');
+  const leg = el('div', 'leg');
+  [['ok', counts.ok, l.c_ok], ['low', counts.low, l.c_low], ['high', counts.high, l.c_high]].forEach(([k, n, t]) => {
+    const d = el('div', k); const b = el('b', null, String(n)); d.append(el('i'), b, document.createTextNode(t)); leg.appendChild(d);
+    if (intro && S.anim) countUp(b, String(n), 900);
+  });
+  sum.append(ring(counts, intro), leg); panel.appendChild(sum); out.appendChild(panel);
+  if (TTS) out.appendChild(voiceBar());
+
+  const abnN = counts.low + counts.high;
+  if (abnN) {
+    const chips = el('div', 'chips');
+    [['all', l.f_all + ' (' + R.rows.length + ')'], ['abn', l.f_abn + ' (' + abnN + ')']].forEach(([k, t]) => {
+      const b = el('button', null, t); b.type = 'button'; b.setAttribute('aria-pressed', String(S.filter === k));
+      b.addEventListener('click', () => { S.filter = k; chips.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); rows.querySelectorAll('.row').forEach(r => { r.hidden = k === 'abn' && r.dataset.status === 'NORMAL'; }); });
+      chips.appendChild(b);
+    });
+    out.appendChild(chips);
+  }
+  const rows = el('div', 'rows'); const rowEls = R.rows.map(r => rowEl(r, intro));
+  rowEls.forEach(r => { r.hidden = S.filter === 'abn' && r.dataset.status === 'NORMAL'; rows.appendChild(r); });
+  out.appendChild(rows);
+  if (intro && S.anim && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); e.target._reveal(); } }), { threshold: 0.15 });
+    rowEls.forEach((r, i) => { r.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(r); });
+    setTimeout(() => rowEls.forEach(r => { if (!r.classList.contains('in')) r._reveal(); }), 6000);
+  } else rowEls.forEach(r => r._reveal());
+
+  out.appendChild(el('div', 'cap', l.legend));
+  out.appendChild(el('div', 'cap', l.caption));
+  out.appendChild(abnN ? note('info', l.tips) : note('ok', l.all_ok));
+  const det = el('details'); det.append(el('summary', null, l.text_exp), el('pre', null, R.text)); out.appendChild(det);
+  out.appendChild(el('div', 'cap', l.not_stored));
+}
+
+/* ---- file handling ---- */
+let busy = false;
+async function showResult(text, source) {
+  const a = analyzeText(text);
+  S.result = { ...a, source, text, discharge: looksLikeDischarge(text), prescription: looksLikePrescription(text) };
+  S.filter = 'all'; applyText(); render(true);
+  if (S.voice === 'on' && TTS) { const R = S.result, l = L(); speak(R.rows.length ? shortText(R) : (R.discharge ? l.discharge : (R.prescription ? l.prescription : l.empty))); }
+}
+async function handleFile(file) {
+  if (!file || busy) return;
+  busy = true; stopSpeech(); $('#out').hidden = true;
+  try {
+    const { text, source } = await readFile(file, (k, v, f) => showProgress(k, v, f));
+    showProgress('p_analyze', null, 1);
+    await new Promise(r => setTimeout(r, 150));
+    await showResult(text, source);
+    $('#out').scrollIntoView({ behavior: S.anim ? 'smooth' : 'auto', block: 'start' });
+  } catch (e) {
+    const out = $('#out'); out.replaceChildren(); out.hidden = false;
+    out.appendChild(note('err', e && e.message === 'NET' ? L().net_error : L().read_error));
+    if (!(e && e.message === 'NET')) out.appendChild(el('div', 'cap', fill(L().tech_err, { e: e && e.message ? e.message : String(e) })));
+  } finally { hideProgress(); busy = false; $('#file').value = ''; }
+}
+
+/* ---- wiring ---- */
+document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+$('#animSw').addEventListener('click', () => setAnim(!S.anim));
+$('#file').addEventListener('change', e => handleFile(e.target.files[0]));
+const drop = $('#drop');
+['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
+
+/* ---- voice help (text-to-speech) ---- */
+const TTS = 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance !== 'undefined';
+const V = { voices: [], speed: parseFloat(store.get('lr_speed')) || 1, token: 0, speaking: false, cur: null };
+S.voice = (['on', 'off'].includes(store.get('lr_voice')) ? store.get('lr_voice') : 'ask');
+function loadVoices() { try { V.voices = speechSynthesis.getVoices() || []; } catch (e) { V.voices = []; } }
+if (TTS) { loadVoices(); try { speechSynthesis.onvoiceschanged = () => { loadVoices(); renderVoiceCard(); }; } catch (e) {} }
+function pickVoice(lang) {
+  const want = lang === 'ta' ? ['ta-in', 'ta'] : ['en-in', 'en-gb', 'en-us', 'en'];
+  for (const w of want) {
+    const v = V.voices.find(x => x.lang && x.lang.replace('_', '-').toLowerCase().startsWith(w));
+    if (v) return v;
+  }
+  return null;
+}
+const hasVoice = lang => !V.voices.length || !!pickVoice(lang);
+function chunkText(s) {
+  const parts = s.replace(/\s+/g, ' ').trim().split(/(?<=[.!?।])\s+/);
+  const out = []; let cur = '';
+  for (const p of parts) {
+    if ((cur + ' ' + p).trim().length > 180) { if (cur) out.push(cur); cur = p; } else cur = (cur + ' ' + p).trim();
+  }
+  if (cur) out.push(cur);
+  return out.flatMap(c => c.length > 240 ? (c.match(/.{1,200}(\s|$)/g) || [c]).map(x => x.trim()) : [c]).filter(Boolean);
+}
+function updateVoiceUI() {
+  const b = $('#voiceBtn'); if (b) b.classList.toggle('speaking', V.speaking);
+  document.querySelectorAll('.vbar .primary').forEach(x => x.classList.toggle('speaking', V.speaking));
+}
+function stopSpeech() {
+  V.token++; V.speaking = false;
+  if (TTS) { try { speechSynthesis.cancel(); } catch (e) {} }
+  updateVoiceUI();
+}
+function speak(text) {
+  if (!TTS || !text) return;
+  stopSpeech();
+  const my = ++V.token, chunks = chunkText(text), voice = pickVoice(S.lang);
+  let i = 0; V.speaking = true; updateVoiceUI();
+  const next = () => {
+    if (my !== V.token) return;
+    if (i >= chunks.length) { V.speaking = false; updateVoiceUI(); return; }
+    const u = new SpeechSynthesisUtterance(chunks[i++]);
+    u.lang = S.lang === 'ta' ? 'ta-IN' : 'en-IN'; if (voice) u.voice = voice; u.rate = V.speed;
+    u.onend = next; u.onerror = () => { if (my === V.token) { V.speaking = false; updateVoiceUI(); } };
+    V.cur = u;
+    try { speechSynthesis.speak(u); } catch (e) { V.speaking = false; updateVoiceUI(); }
+  };
+  next();
+}
+const UNITS = {
+  '%': ['சதவீதம்', 'percent'], 'gm%': ['கிராம் சதவீதம்', 'grams percent'], 'g/dl': ['கிராம் ஒரு டெசிலிட்டர்', 'grams per deciliter'],
+  'mg/dl': ['மில்லிகிராம் ஒரு டெசிலிட்டர்', 'milligrams per deciliter'], 'fl': ['ஃபெம்டோலிட்டர்', 'femtolitres'],
+  'pg': ['பிகோகிராம்', 'picograms'], 'iu/ml': ['', ''],
+};
+const spokenUnit = u => { const m = UNITS[(u || '').toLowerCase()]; return m ? m[S.lang === 'ta' ? 0 : 1] : (u || ''); };
+const statusWord = s => ({ LOW: L().c_low, HIGH: L().c_high, NORMAL: L().c_ok })[s];
+function rangeSpoken(r) {
+  const l = L();
+  if (r.high >= 1000000) return fill(l.v_above, { lo: fmt(r.low) });
+  if (r.low === 0) return fill(l.v_below, { hi: fmt(r.high) });
+  return fill(l.v_range, { lo: fmt(r.low), hi: fmt(r.high) });
+}
+function explainText(r) {
+  const info = (D.info[S.lang][r.test] || {})[r.status] || D.defaultInfo[S.lang];
+  return [['meaning', 's_meaning'], ['reasons', 's_reasons'], ['risk', 's_risk'], ['diet', 's_diet'], ['doctor', 's_doctor']]
+    .filter(([f]) => info[f]).map(([f, lbl]) => L()[lbl].replace(/[:：]\s*$/, '') + ': ' + info[f]).join(' ');
+}
+function itemText(r) {
+  return fill(L().v_item, { name: D.names[S.lang][r.test] || r.test, value: fmt(r.value), unit: spokenUnit(r.unit), range: rangeSpoken(r), status: statusWord(r.status) });
+}
+function summaryText(R) {
+  const l = L(), n = R.rows.length, ok = R.rows.filter(r => r.status === 'NORMAL').length;
+  const abn = R.rows.filter(r => r.status !== 'NORMAL');
+  let s = fill(l.v_sum, { n, ok, low: abn.filter(r => r.status === 'LOW').length, high: abn.filter(r => r.status === 'HIGH').length });
+  s += ' ' + (abn.length ? fill(l.v_abn_list, { list: abn.map(r => (D.names[S.lang][r.test] || r.test) + ' ' + statusWord(r.status)).join(', ') }) : l.v_all_ok);
+  return s;
+}
+function shortText(R) { const abn = R.rows.some(r => r.status !== 'NORMAL'); return summaryText(R) + (abn ? ' ' + L().v_more : '') + ' ' + L().v_disc; }
+function fullText(R) {
+  return summaryText(R) + ' ' + R.rows.filter(r => r.status !== 'NORMAL').map(r => itemText(r) + ' ' + explainText(r)).join(' ') + ' ' + L().v_disc;
+}
+function setVoice(v) {
+  S.voice = v; store.set('lr_voice', v); renderVoiceCard();
+  if (v === 'off') stopSpeech();
+}
+function renderVoiceCard() {
+  const c = $('#vcard'), vb = $('#voiceBtn'); if (!c || !vb) return;
+  c.replaceChildren();
+  if (!TTS) { c.hidden = true; vb.hidden = true; return; }
+  vb.hidden = false; vb.setAttribute('aria-pressed', String(S.voice === 'on')); vb.title = L().v_btn; vb.setAttribute('aria-label', L().v_btn);
+  if (S.voice === 'off' || (S.voice === 'on' && S.result)) { c.hidden = true; return; }
+  c.hidden = false; const l = L(), body = el('div', 'vbody'), row = el('div', 'vrow');
+  if (S.voice === 'ask') {
+    body.append(el('b', null, l.v_title), el('p', null, l.v_text));
+    const y = el('button', 'pill primary', l.v_yes), n = el('button', 'pill', l.v_no); y.type = n.type = 'button';
+    y.addEventListener('click', () => { setVoice('on'); speak(l.v_greet); });
+    n.addEventListener('click', () => setVoice('off'));
+    row.append(y, n); body.appendChild(row);
+  } else {
+    body.appendChild(el('b', null, l.v_on_title));
+    const h = el('button', 'pill primary', '▶ ' + l.v_hear), o = el('button', 'pill', l.v_turnoff); h.type = o.type = 'button';
+    h.addEventListener('click', () => speak(l.v_greet)); o.addEventListener('click', () => setVoice('off'));
+    row.append(h, o); body.appendChild(row);
+  }
+  if (!hasVoice(S.lang)) body.appendChild(el('p', 'vwarn', l.v_novoice));
+  c.append(el('div', 'vico', '🔊'), body);
+}
+function voiceBar() {
+  const l = L(), bar = el('div', 'vbar');
+  const play = el('button', 'pill primary', '🔊 ' + l.v_readall), stop = el('button', 'pill', '⏹ ' + l.v_stop); play.type = stop.type = 'button';
+  play.addEventListener('click', () => speak(fullText(S.result))); stop.addEventListener('click', stopSpeech);
+  const sp = el('div', 'vspeed'); sp.appendChild(document.createTextNode(l.v_speed + ' '));
+  [0.8, 1, 1.2].forEach(x => {
+    const b = el('button', null, x + '×'); b.type = 'button'; b.setAttribute('aria-pressed', String(V.speed === x));
+    b.addEventListener('click', () => { V.speed = x; store.set('lr_speed', String(x)); sp.querySelectorAll('button').forEach(y => y.setAttribute('aria-pressed', String(y === b))); });
+    sp.appendChild(b);
+  });
+  bar.append(play, stop, sp); return bar;
+}
+$('#voiceBtn').addEventListener('click', () => { if (S.voice === 'on') setVoice('off'); else { setVoice('on'); speak(L().v_greet); } });
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopSpeech(); });
+
+/* ---- floating health icons ---- */
+function makeFloaters() {
+  const host = $('#floaters'); host.replaceChildren();
+  const NS = 'http://www.w3.org/2000/svg';
+  const icons = ['drop', 'heart', 'cross', 'pill', 'steth', 'syringe', 'thermo', 'ecg', 'tube', 'dna', 'bandage', 'report', 'lens', 'spark'];
+  const n = innerWidth < 520 ? 14 : 22;
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < n; i++) {
+    const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', 'fi c' + (i % 5));
+    const u = document.createElementNS(NS, 'use'); u.setAttribute('href', '#i-' + icons[i % icons.length]); s.appendChild(u);
+    const size = 34 + rnd() * 48;
+    s.style.width = s.style.height = size.toFixed(0) + 'px';
+    s.style.setProperty('--x', ((i + rnd() * 0.8) / n * 96).toFixed(1) + 'vw');
+    s.style.setProperty('--o', (0.17 + rnd() * 0.12).toFixed(2));
+    s.style.setProperty('--t', (30 + rnd() * 28).toFixed(0) + 's');
+    s.style.setProperty('--dl', '-' + (rnd() * 55).toFixed(0) + 's');
+    s.style.setProperty('--sw', ((rnd() - 0.5) * 14).toFixed(1) + 'vw');
+    s.style.setProperty('--r', ((rnd() < 0.5 ? -1 : 1) * (40 + rnd() * 120)).toFixed(0) + 'deg');
+    host.appendChild(s);
+  }
+}
+makeFloaters();
+
+/* ---- install as an app (PWA) ---- */
+let deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; $('#installBtn').hidden = false; });
+window.addEventListener('appinstalled', () => { $('#installBtn').hidden = true; deferredInstall = null; });
+$('#installBtn').addEventListener('click', async () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt(); try { await deferredInstall.userChoice; } catch (e) {}
+  deferredInstall = null; $('#installBtn').hidden = true;
+});
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+
+S.lang = store.get('lr_lang') === 'en' ? 'en' : 'ta';
+const savedAnim = store.get('lr_anim');
+setAnim(savedAnim === null ? !reduceMotion : savedAnim === '1');
+applyText();
+
+window.__lr = { speak, stopSpeech, fullText, shortText, analyzeText, itemsToLines, looksLikeDischarge, looksLikePrescription, showResult, setLang, setAnim, state: S };
+})();
+</script>
+</body>
+</html>
